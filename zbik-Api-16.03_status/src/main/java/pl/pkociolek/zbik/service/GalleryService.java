@@ -7,7 +7,7 @@ import pl.pkociolek.zbik.repository.entity.GalleryEntity;
 import java.util.List;
 
 public interface GalleryService {
-    void save(MultipartFile file, GalleryRequestDto galleryDto);
+    void addNewGallery(MultipartFile file, GalleryRequestDto galleryDto);
     void deleteById(String id);
     void modify(GalleryRequestDto galleryRequestDto, MultipartFile file);
     List<GalleryEntity> getAllPhotos();

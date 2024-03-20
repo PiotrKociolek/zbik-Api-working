@@ -8,14 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.pkociolek.zbik.exception.DatabaseEntityIsNotExistException;
 import pl.pkociolek.zbik.exception.FileAlreadyExistsException;
 import pl.pkociolek.zbik.model.dtos.request.DocsRequestDto;
-import pl.pkociolek.zbik.model.dtos.request.GalleryRequestDto;
-import pl.pkociolek.zbik.model.dtos.request.UpdatePostDto;
 import pl.pkociolek.zbik.repository.DocumentsRepository;
-import pl.pkociolek.zbik.repository.MapsRepository;
 import pl.pkociolek.zbik.repository.entity.DocsEntity;
-import pl.pkociolek.zbik.repository.entity.GalleryEntity;
-import pl.pkociolek.zbik.repository.entity.MapsEntity;
-import pl.pkociolek.zbik.repository.entity.PostEntity;
 import pl.pkociolek.zbik.service.DocsService;
 
 import java.nio.charset.StandardCharsets;
@@ -42,7 +36,7 @@ public class DocsServiceImpl implements DocsService {
     }
 
     @Override
-    public void save(MultipartFile file, DocsRequestDto dto){
+    public void addDocs(MultipartFile file, DocsRequestDto dto){
         try {
             final DocsEntity uEntity= setDocsDetails(file,dto);
             Files.copy(

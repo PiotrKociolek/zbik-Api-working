@@ -12,7 +12,7 @@ public interface ManagementService {
 
     void deleteFromManagement(String id);
     void addToManagement(ManagementInfoDto dto);
-    void save(MultipartFile file, ManagementImgDto mgmt);
+    void addMgmtImg(MultipartFile file, ManagementImgDto mgmt);
 
 
 

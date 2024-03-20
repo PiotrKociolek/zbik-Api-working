@@ -10,6 +10,6 @@ public interface HuntingCalendarService {
 
     void editDescription(HuntingCalendarDto huntingCalendarDto);
     void deleteFromTable(String id);
-    void save(MultipartFile file, CalendarRequestDto dto);
+    void addIcon(MultipartFile file, CalendarRequestDto dto);
 
 }

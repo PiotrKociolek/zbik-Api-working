@@ -45,6 +45,6 @@ public class CalendarController {
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ResponseStatus(value = HttpStatus.OK)
   public void save( @RequestParam(value = "file") final MultipartFile file, @RequestBody final CalendarRequestDto dto) {
-    calendarService.save(file, dto);
+    calendarService.addIcon(file, dto);
   }
 }

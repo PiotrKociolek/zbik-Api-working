@@ -12,28 +12,21 @@ import pl.pkociolek.zbik.service.MapsService;
 @RequiredArgsConstructor
 @RequestMapping("/maps")
 public class MapsController {
-  final MapsService mapsService;
-@PutMapping(
-        value ="/maps/add",
-        produces = MediaType.APPLICATION_JSON_VALUE,
-        consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-)
-  void save(@RequestParam final MultipartFile file, @RequestBody final MapRequestDto mapRequestDto) {
-    mapsService.save(file, mapRequestDto);
-  }
-  @DeleteMapping(
-          value ="/maps/{id}",
-          produces = MediaType.APPLICATION_JSON_VALUE
-  )
+    final MapsService mapsService;
+
+    @PutMapping(value = "/maps/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    void addMap(@RequestParam final MultipartFile file, @RequestBody final MapRequestDto mapRequestDto) {
+        mapsService.addMap(file, mapRequestDto);
+    }
+
+    @DeleteMapping(value = "/maps/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     void deleteMapById(@PathVariable("id") final String id) {
-    mapsService.deleteMapById(id);
-  }
-@PutMapping(
-        value ="/maps/add-desc",
-        produces = MediaType.APPLICATION_JSON_VALUE
-)
-@ResponseStatus (value = HttpStatus.OK)
+        mapsService.deleteMapById(id);
+    }
+
+    @PutMapping(value = "/maps/add-desc", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.OK)
     void addDescription(@RequestBody final MapRequestDto mapRequestDto) {
-    mapsService.addDescription(mapRequestDto);
-  }
+        mapsService.addDescription(mapRequestDto);
+    }
 }

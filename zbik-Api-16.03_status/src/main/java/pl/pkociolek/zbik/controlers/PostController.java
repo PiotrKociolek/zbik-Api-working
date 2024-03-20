@@ -9,8 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.pkociolek.zbik.model.PostVisibility;
-import pl.pkociolek.zbik.model.dtos.request.CreatePostDto;
-import pl.pkociolek.zbik.model.dtos.request.UpdatePostDto;
+import pl.pkociolek.zbik.model.dtos.request.CreateOrUpdatePostDto;
 import pl.pkociolek.zbik.model.dtos.response.PostResponseDto;
 import pl.pkociolek.zbik.service.PostService;
 
@@ -25,15 +24,16 @@ public class PostController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void createPost(@RequestBody final CreatePostDto createPostDto, @RequestParam(value = "file") final MultipartFile file){
-        postService.createPost(createPostDto);
+    public void createPost(@ModelAttribute final CreateOrUpdatePostDto createOrUpdatePostDto) {
+        postService.createPost(createOrUpdatePostDto);
     }
-
     @PutMapping(value = "/posts/{postId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void updatePost( @PathVariable(value = "postId") String postId,@RequestBody final UpdatePostDto updatePostDto, @RequestParam(value = "file") final MultipartFile file ){
-        postService.updatePost(updatePostDto);
-}
+    public void updatePost(@PathVariable(value = "postId") String postId,
+                           @ModelAttribute final CreateOrUpdatePostDto createOrUpdatePostDto) {
+        createOrUpdatePostDto.setId(postId);
+        postService.updatePost(createOrUpdatePostDto);
+    }
     @DeleteMapping(value = "/posts/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value =HttpStatus.OK )
     public void deletePost(@PathVariable final String postId){

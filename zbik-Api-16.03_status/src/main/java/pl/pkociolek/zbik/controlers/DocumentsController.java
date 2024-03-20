@@ -23,7 +23,7 @@ public class DocumentsController {
     @PutMapping(value = "/documents/add" ,produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     void save(@RequestParam(value = "file")MultipartFile file, @RequestBody DocsRequestDto dto){
-        docsService.save(file, dto);
+        docsService.addDocs(file, dto);
     };
     @PutMapping(value = "/documents/edit",produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)

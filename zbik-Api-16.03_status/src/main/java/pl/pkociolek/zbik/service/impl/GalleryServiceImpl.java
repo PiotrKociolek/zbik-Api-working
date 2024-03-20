@@ -30,7 +30,7 @@ public class GalleryServiceImpl implements GalleryService {
   private final ModelMapper modelMapper;
   private final List<GalleryEntity> photoList = new ArrayList<>();
   @Override
-  public void save(final MultipartFile file, final GalleryRequestDto galleryRequestDto) {
+  public void addNewGallery(final MultipartFile file, final GalleryRequestDto galleryRequestDto) {
     try {
       final GalleryEntity gallery = setGalleryDetails(file, galleryRequestDto);
       Files.copy(
@@ -55,9 +55,7 @@ public class GalleryServiceImpl implements GalleryService {
 
     if (optionalGallery.isPresent()) {
       GalleryEntity gallery = optionalGallery.get();
-
       gallery.setTitle(galleryRequestDto.getTitle());
-
       if (file != null && !file.isEmpty()) {
         try {
           Files.copy(

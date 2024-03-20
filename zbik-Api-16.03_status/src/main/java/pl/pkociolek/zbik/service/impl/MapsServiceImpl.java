@@ -26,7 +26,7 @@ private final MapsRepository repository;
 private final ModelMapper modelMapper;
     private final Path root = Paths.get("uploads");
     @Override
-    public void save(MultipartFile file, MapRequestDto dto){
+    public void addMap(MultipartFile file, MapRequestDto dto){
         try {
             final MapsEntity mEntity= setMapDetails(file,dto);
             Files.copy(

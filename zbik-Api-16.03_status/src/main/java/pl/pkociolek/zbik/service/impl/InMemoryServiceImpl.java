@@ -21,7 +21,7 @@ public class InMemoryServiceImpl implements InMemoryService {
   private final InMemoryRepository repository;
 
   @Override
-  public void addToValhalla(final RIPRequestDto dto) {
+  public void addToMemorialPage(final RIPRequestDto dto) {
     final InMemoryEntity legend = modelMapper.map(dto, InMemoryEntity.class);
     legend.setId(null);
     repository.save(legend);

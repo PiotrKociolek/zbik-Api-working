@@ -24,7 +24,7 @@ final GalleryService galleryService;
     public void addGallery(
             @RequestBody final GalleryRequestDto galleryRequestDto,
             @RequestParam(value = "file") final MultipartFile file) {
-        galleryService.save(file, galleryRequestDto);
+        galleryService.addNewGallery(file, galleryRequestDto);
     }
 
     @DeleteMapping(

@@ -1,6 +1,8 @@
 package pl.pkociolek.zbik.repository.entity;
 
 import java.time.Instant;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +24,7 @@ public class PostEntity {
   private Instant creationDateTime;
   private Instant modificationDateTime;
   private PostVisibility postVisibility;
-  private String fileName;
-  private String obfuscatedFileName;
-  private String fileExtension;
+
+  private List<ImageEntity> images;
+
 }

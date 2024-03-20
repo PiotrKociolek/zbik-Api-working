@@ -11,7 +11,7 @@ public class EmailActivationAndPassResetImpl implements EmailActivationAndPassRe
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(recipientEmail);
         message.setSubject("Aktywacja konta");
-        message.setText("Witaj! Kliknij w poniższy link, aby aktywować swoje konto: " + activationLink);
+        message.setText("Aktywuj swoje konto na stronie koła łowieckiego żbik: " + activationLink);
         javaMailSender.send(message);
     }
     @Override
@@ -19,7 +19,7 @@ public class EmailActivationAndPassResetImpl implements EmailActivationAndPassRe
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(recipientEmail);
         message.setSubject("Resetowanie hasła");
-        message.setText("Witaj! Kliknij w poniższy link, aby zresetować swoje hasło: " + resetLink);
+        message.setText("Kliknij w poniższy link, aby zresetować swoje hasło: " + resetLink);
         javaMailSender.send(message);
     }
 }

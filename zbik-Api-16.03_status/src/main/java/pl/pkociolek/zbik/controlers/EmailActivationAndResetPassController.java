@@ -12,7 +12,7 @@ import pl.pkociolek.zbik.repository.UserRepository;
 import pl.pkociolek.zbik.repository.entity.ResetPasswordAndActiveAccEntity;
 
 import java.util.UUID;
-/*
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/resetPasswordAndActivateAcc")
@@ -25,7 +25,6 @@ public class EmailActivationAndResetPassController {
     public void sendActivationEmail(@RequestBody ResetPasswordAndActiveAccEntity userEntity) {
         String activationLink = UUID.randomUUID().toString();
         userEntity.setActivationLink(activationLink);
-       // user.save();
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(userEntity.getUserAddress());
@@ -38,7 +37,6 @@ public class EmailActivationAndResetPassController {
     public void sendPasswordResetEmail(@RequestBody ResetPasswordAndActiveAccEntity entity) {
         String resetLink = UUID.randomUUID().toString();
         entity.setResetLink(resetLink);
-       // user.save();
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(entity.getUserAddress());
@@ -50,4 +48,3 @@ public class EmailActivationAndResetPassController {
 
 }
 
-*/

@@ -26,30 +26,26 @@ public class ManagementServiceImpl implements ManagementService {
   private final ManagementRepository repository;
   private final ModelMapper modelMapper;
 
-  // Katalog, w którym będą przechowywane pliki
   private final Path root = Paths.get("uploads");
 
-  // Usunięcie obiektu z repozytorium na podstawie jego identyfikatora
   @Override
   public void deleteFromManagement(final String id) {
     repository.deleteById(id);
   }
 
-  // Dodanie informacji o zarządzaniu na podstawie DTO
   @Override
   public void addToManagement(final ManagementInfoDto dto) {
     final ManagementEntity mgmtE = modelMapper.map(dto, ManagementEntity.class);
     mgmtE.setId(null);
     mgmtE.setSurname(dto.getSurname());
-    mgmtE.setName(dto.getName()); // Ustawienie imienia
-    mgmtE.setRole(dto.getRole()); // Ustawienie roli
-    mgmtE.setContact(dto.getContact()); // Ustawienie kontaktu
+    mgmtE.setName(dto.getName());
+    mgmtE.setRole(dto.getRole());
+    mgmtE.setContact(dto.getContact());
     repository.save(mgmtE);
   }
 
-  // Zapis pliku i informacji o zarządzaniu na podstawie DTO
   @Override
-  public void save(final MultipartFile file, final ManagementImgDto dto) {
+  public void addMgmtImg(final MultipartFile file, final ManagementImgDto dto) {
     try {
       final ManagementEntity mEntity = setMgmtDetails(file, dto);
       Files.copy(
@@ -62,7 +58,6 @@ public class ManagementServiceImpl implements ManagementService {
     }
   }
 
-  // Ustawienie szczegółów zarządzania na podstawie pliku i DTO
   private ManagementEntity setMgmtDetails(final MultipartFile file, final ManagementImgDto mgmt) {
     final ManagementEntity MgmtEntity = modelMapper.map(mgmt, ManagementEntity.class);
     MgmtEntity.setId(null);
@@ -70,14 +65,12 @@ public class ManagementServiceImpl implements ManagementService {
     return MgmtEntity;
   }
 
-  // Generowanie losowej nazwy pliku
   private String generateFilename() {
     final byte[] array = new byte[33];
     new Random().nextBytes(array);
     return new String(array, StandardCharsets.UTF_8);
   }
 
-  // Pobranie nazwy pliku z rozszerzeniem na podstawie obiektu zarządzania
   private String getFileNameAndExtension(final ManagementEntity mgmt) {
     final String filename = mgmt.getObfuscatedFileName();
     final String extension = mgmt.getFileExtension();

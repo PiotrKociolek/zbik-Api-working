@@ -61,7 +61,7 @@ public class HuntingCalendarServiceImpl implements HuntingCalendarService {
 
 
   @Override
-  public void save(MultipartFile file, CalendarRequestDto dto){
+  public void addIcon(MultipartFile file, CalendarRequestDto dto){
     try {
       final HuntingCalendarEntity hEntity= setIconDetails(file,dto);
       Files.copy(
