@@ -1,0 +1,46 @@
+version: "3.8"
+services:
+  mongodb-node-0:
+    container_name: mongo-persistence-node
+    image: mongo:latest
+    restart: always
+    env_file:
+      - ./dev/env/mongo.env
+    command: mongod --port 27100
+    volumes:
+      - ./dev/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./dev/mongo/data:/data/db
+    ports:
+      - '127.0.0.1:27020:27100'
+    networks:
+      - zbiketh
+  redis-node-0:
+    container_name: redis-cache-node
+    image: redis:latest
+    restart: always
+    depends_on:
+      - mongodb-node-0
+    env_file:
+      - ./dev/env/redis.env
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_HOST_PASSWORD"
+    volumes:
+      - ./dev/mongo/cache:/data
+    ports:
+      - '127.0.0.1:16379:6379'
+    networks:
+      - zbiketh
+
+volumes:
+  mongodb:
+    driver: local
+  cache:
+    driver: local
+
+networks:
+  zbiketh:
+    driver: bridge
+    name: 'Zbik-Bridge-Network'

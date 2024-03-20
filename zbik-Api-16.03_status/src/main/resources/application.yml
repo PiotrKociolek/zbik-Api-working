@@ -1,0 +1,42 @@
+spring:
+  security:
+    user:
+      name: admin
+      password: admin
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  mvc:
+    static-path-pattern: /uploads/**
+  web:
+    resources:
+      static-locations: file:/resources
+  application:
+    name: ZBIK - Hunting Association Server
+  data:
+    mongodb:
+      host: '${DATABASE_HOST}'
+      port: '${DATABASE_PORT}'
+      database: '${DATABASE_COLLECTION}'
+      username: '${DATABASE_USERNAME}'
+      password: '${DATABASE_PASSWORD}'
+      authentication-database: '${DATABASE_AUTH_SOURCE:admin}'
+    redis:
+      database: '${CACHE_TABLE}'
+      host: '${CACHE_HOST}'
+      port: '${CACHE_PORT}'
+      password: '${CACHE_PASSWORD}'
+      timeout: '${CACHE_TIMEOUT:6000}'
+      repositories:
+        enabled: false
+  profiles:
+    active: '${ACTIVE_PROFILE:dev}'
+logging:
+  file:
+    name: '${LOGGING_FILE:./logs/zbik-server.log}'
+server:
+  port: '${SERVER_PORT:8080}'
+  address: '${SERVER_ADDRESS:127.0.0.1}'
+  servlet:
+    context-path: /api/v1
