@@ -26,48 +26,50 @@ import pl.pkociolek.zbik.utilities.jwt.JwtTokenEncoder;
 @RequiredArgsConstructor
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SpringSecurityConfig {
-  private final AuthenticationConfiguration authenticationConfiguration;
-  private final JwtTokenEncoder jwtTokenEncoder;
-  private final SecurityDetailsService securityDetailsService;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtTokenEncoder jwtTokenEncoder;
+    private final SecurityDetailsService securityDetailsService;
 
-  @Bean
-  public AuthenticationManager authManager() throws Exception {
-    return authenticationConfiguration.getAuthenticationManager();
-  }
+    @Bean
+    public AuthenticationManager authManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-  @Bean
-  public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(
-            chain ->
-                chain
-                    .requestMatchers("/swagger-ui/**")
-                    .permitAll()
-                    .requestMatchers(GET, "/gallery/**", "/management/**", "/posts/**")
-                    .hasAnyRole("ADMIN", "MODERATOR", "NORMAL", "GUEST")
-                    .requestMatchers(
-                        DELETE,
-                        "/calendar/**",
-                        "/user/**",
-                        "/gallery/**",
-                        "/management/**",
-                        "/documents/**",
-                        "/maps/**",
-                        "/posts/**")
-                    .hasAnyRole("ADMIN", "MODERATOR")
-                    .requestMatchers(
-                        PUT, "/calendar/**", "/documents/**", "/gallery/**", "/management/**", "/posts/**")
-                    .hasAnyRole("ADMIN", "MODERATOR", "NORMAL", "GUEST")
-                    .requestMatchers(POST, "/user/**", "/gallery/**")
-                        .hasAnyRole("ADMIN")
-                        .requestMatchers(POST, "/gallery/**")
-                        .hasAnyRole("ADMIN", "MODERATOR")
-                    .anyRequest()
-                    .permitAll())
-            .httpBasic(Customizer.withDefaults())
-            .addFilter(new TokenAuthFilter(authManager(), jwtTokenEncoder))
-            .addFilterBefore(
-                new TokenAuthenticationFilter(authManager(), jwtTokenEncoder, securityDetailsService),
-                TokenAuthenticationFilter.class);
-    return http.build();
-  }
+    @Bean
+    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(
+                        chain ->
+                                chain
+                                        .requestMatchers("/swagger-ui/**")
+                                        .permitAll()
+                                        .requestMatchers(GET, "/gallery/**", "/management/**", "/posts/**")
+                                        .hasAnyRole("ADMIN", "MODERATOR", "NORMAL", "GUEST")
+                                        .requestMatchers(
+                                                DELETE,
+                                                "/calendar/**",
+                                                "/user/**",
+                                                "/gallery/**",
+                                                "/management/**",
+                                                "/documents/**",
+                                                "/maps/**",
+                                                "/posts/**")
+                                        .hasAnyRole("ADMIN", "MODERATOR")
+                                        .requestMatchers(
+                                                PUT, "/calendar/**", "/documents/**", "/gallery/**", "/management/**", "/posts/**")
+                                        .hasAnyRole("ADMIN", "MODERATOR", "NORMAL", "GUEST")
+                                        .requestMatchers(POST, "/user/**", "/gallery/**")
+                                        .hasAnyRole("ADMIN")
+                                        .requestMatchers(POST, "/gallery/**")
+                                        .hasAnyRole("ADMIN", "MODERATOR")
+                                        .requestMatchers(POST, "/api/v1/admin/admin")
+                                        .permitAll()
+                                        .anyRequest()
+                                        .permitAll())
+                .httpBasic(Customizer.withDefaults())
+                .addFilter(new TokenAuthFilter(authManager(), jwtTokenEncoder))
+                .addFilterBefore(
+                        new TokenAuthenticationFilter(authManager(), jwtTokenEncoder, securityDetailsService),
+                        TokenAuthenticationFilter.class);
+        return http.build();
+    }
 }

@@ -19,6 +19,8 @@ import pl.pkociolek.zbik.exception.FileAlreadyExistsException;
 import pl.pkociolek.zbik.exception.PasswordDoesNotMatchException;
 import pl.pkociolek.zbik.exception.UserAlreadyExistException;
 import pl.pkociolek.zbik.exception.UserNotFoundException;
+import pl.pkociolek.zbik.model.Role;
+import pl.pkociolek.zbik.model.dtos.request.AdminRequestDto;
 import pl.pkociolek.zbik.model.dtos.request.UserRequestDto;
 import pl.pkociolek.zbik.model.dtos.response.UserJWT;
 import pl.pkociolek.zbik.model.dtos.response.UserLoginResponseDto;
@@ -76,6 +78,14 @@ class UserServiceImpl implements UserService {
     return userRepository.findAllOrderBySurname(surname);
   }
 
+  @Override
+  public void addAdmin(AdminRequestDto dto) {
+     final UserEntity entity = modelMapper.map(dto, UserEntity.class);
+    entity.setId(null);
+    entity.setRole(dto.getRole());
+     userRepository.save(entity);
+
+  }
 
 
   // Metoda sprawdzająca, czy mail jest już używany

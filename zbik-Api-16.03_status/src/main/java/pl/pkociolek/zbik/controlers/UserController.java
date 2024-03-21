@@ -16,7 +16,6 @@ import pl.pkociolek.zbik.service.UserService;
 @RequestMapping("/user")
 public class UserController {
   private final UserService userService;
-  private final GalleryService galleryService;
   @PostMapping(value = "/login/{username}/{password}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(value = HttpStatus.OK)
   public UserLoginResponseDto loginUser(
@@ -29,8 +28,6 @@ public class UserController {
   public void addUser(@RequestBody final UserRequestDto dto) {
     userService.addUser(dto);
   }
-
-
 
   @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(value = HttpStatus.OK)
