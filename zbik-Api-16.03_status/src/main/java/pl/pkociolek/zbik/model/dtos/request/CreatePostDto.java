@@ -9,13 +9,11 @@ import pl.pkociolek.zbik.model.PostVisibility;
 
 import java.time.Instant;
 import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrUpdatePostDto {
-    private String id;
+public class CreatePostDto {
     private String content;
     private String title;
     private String userId;
@@ -24,5 +22,3 @@ public class CreateOrUpdatePostDto {
     private PostVisibility postVisibility;
     private List<MultipartFile> images;
 }
-
-

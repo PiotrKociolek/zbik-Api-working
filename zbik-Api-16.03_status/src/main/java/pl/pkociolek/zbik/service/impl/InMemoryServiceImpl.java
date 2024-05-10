@@ -22,9 +22,9 @@ public class InMemoryServiceImpl implements InMemoryService {
 
   @Override
   public void addToMemorialPage(final RIPRequestDto dto) {
-    final InMemoryEntity legend = modelMapper.map(dto, InMemoryEntity.class);
-    legend.setId(null);
-    repository.save(legend);
+    final InMemoryEntity inMemoryEntity = modelMapper.map(dto, InMemoryEntity.class);
+    inMemoryEntity.setId(null);
+    repository.save(inMemoryEntity);
   }
 
   @Override
@@ -32,10 +32,10 @@ public class InMemoryServiceImpl implements InMemoryService {
       Optional<InMemoryEntity> optionalEntity = repository.findById(id);
 
       if (optionalEntity.isPresent()) {
-          InMemoryEntity legend = optionalEntity.get();
-          legend.setSurname(uSurname);
-          legend.setName(uName);
-          repository.save(legend);}
+          InMemoryEntity inMemoryEntity = optionalEntity.get();
+          inMemoryEntity.setSurname(uSurname);
+          inMemoryEntity.setName(uName);
+          repository.save(inMemoryEntity);}
           else {
               throw new EntityNotFoundException();
           }

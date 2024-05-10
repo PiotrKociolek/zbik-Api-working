@@ -3,7 +3,7 @@ package pl.pkociolek.zbik.configuration;
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +19,7 @@ import pl.pkociolek.zbik.service.SecurityDetailsService;
 import pl.pkociolek.zbik.utilities.TokenAuthFilter;
 import pl.pkociolek.zbik.utilities.TokenAuthenticationFilter;
 import pl.pkociolek.zbik.utilities.jwt.JwtTokenEncoder;
+
 
 @Configuration
 @EnableWebMvc
@@ -37,39 +38,16 @@ public class SpringSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(
-                        chain ->
-                                chain
-                                        .requestMatchers("/swagger-ui/**")
-                                        .permitAll()
-                                        .requestMatchers(GET, "/gallery/**", "/management/**", "/posts/**")
-                                        .hasAnyRole("ADMIN", "MODERATOR", "NORMAL", "GUEST")
-                                        .requestMatchers(
-                                                DELETE,
-                                                "/calendar/**",
-                                                "/user/**",
-                                                "/gallery/**",
-                                                "/management/**",
-                                                "/documents/**",
-                                                "/maps/**",
-                                                "/posts/**")
-                                        .hasAnyRole("ADMIN", "MODERATOR")
-                                        .requestMatchers(
-                                                PUT, "/calendar/**", "/documents/**", "/gallery/**", "/management/**", "/posts/**")
-                                        .hasAnyRole("ADMIN", "MODERATOR", "NORMAL", "GUEST")
-                                        .requestMatchers(POST, "/user/**", "/gallery/**")
-                                        .hasAnyRole("ADMIN")
-                                        .requestMatchers(POST, "/gallery/**")
-                                        .hasAnyRole("ADMIN", "MODERATOR")
-                                        .requestMatchers(POST, "/api/v1/admin/admin")
-                                        .permitAll()
-                                        .anyRequest()
-                                        .permitAll())
-                .httpBasic(Customizer.withDefaults())
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(chain -> chain
+                        .requestMatchers("/swagger-ui/**")
+                        .permitAll()
+                        .anyRequest()
+                        .permitAll())
                 .addFilter(new TokenAuthFilter(authManager(), jwtTokenEncoder))
-                .addFilterBefore(
-                        new TokenAuthenticationFilter(authManager(), jwtTokenEncoder, securityDetailsService),
-                        TokenAuthenticationFilter.class);
+                .addFilterBefore(new TokenAuthenticationFilter(authManager(), jwtTokenEncoder, securityDetailsService), TokenAuthenticationFilter.class);
         return http.build();
     }
 }

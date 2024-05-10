@@ -7,10 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import pl.pkociolek.zbik.exception.FileAlreadyExistsException;
 import pl.pkociolek.zbik.exception.ImageNotFoundException;
-import pl.pkociolek.zbik.model.dtos.request.CreateOrUpdatePostDto;
-import pl.pkociolek.zbik.model.dtos.request.GalleryRequestDto;
+import pl.pkociolek.zbik.model.dtos.request.CreatePostDto;
+import pl.pkociolek.zbik.model.dtos.request.UpdatePostDto;
 import pl.pkociolek.zbik.repository.ImageRepository;
-import pl.pkociolek.zbik.repository.entity.GalleryEntity;
 import pl.pkociolek.zbik.repository.entity.ImageEntity;
 import pl.pkociolek.zbik.service.PostImageService;
 
@@ -33,12 +32,23 @@ public class PostImageServiceImpl implements PostImageService {
     private final ModelMapper modelMapper;
 
 
-
-
     @Override
-    public void addPostImg(MultipartFile file, CreateOrUpdatePostDto dto) {
+    public void addPostImg(MultipartFile file, CreatePostDto dto) {
         try {
             final ImageEntity imageEntity = setImageDetails(file, dto);
+            Files.copy(
+                    file.getInputStream(),
+                    this.root.resolve(Objects.requireNonNull(getFileNameAndExtension(imageEntity))),
+                    StandardCopyOption.REPLACE_EXISTING);
+            repository.save(imageEntity);
+        } catch (final Exception e) {
+            throw new FileAlreadyExistsException();
+        }
+    }
+    @Override
+    public void updatePostImg(MultipartFile file, UpdatePostDto dto) {
+        try {
+            final ImageEntity imageEntity = setImageDetailsUpdate(file, dto);
             Files.copy(
                     file.getInputStream(),
                     this.root.resolve(Objects.requireNonNull(getFileNameAndExtension(imageEntity))),
@@ -61,7 +71,14 @@ public class PostImageServiceImpl implements PostImageService {
     }
 
 
-    private ImageEntity setImageDetails(final MultipartFile file, final CreateOrUpdatePostDto dto) {
+    private ImageEntity setImageDetails(final MultipartFile file, final CreatePostDto dto) {
+        final ImageEntity imageEntity = modelMapper.map(dto, ImageEntity.class);
+        imageEntity.setId(null);
+        imageEntity.setFileName(file.getOriginalFilename());
+        imageEntity.setObfuscatedFileName(generateFilename());
+        return imageEntity;
+    }
+    private ImageEntity setImageDetailsUpdate(final MultipartFile file, final UpdatePostDto dto) {
         final ImageEntity imageEntity = modelMapper.map(dto, ImageEntity.class);
         imageEntity.setId(null);
         imageEntity.setFileName(file.getOriginalFilename());

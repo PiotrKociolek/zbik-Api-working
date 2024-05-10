@@ -13,3 +13,4 @@ spring:
       username: default
       password: admin
       timeout: '60000'
+

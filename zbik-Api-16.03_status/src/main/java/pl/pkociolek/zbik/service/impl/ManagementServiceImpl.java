@@ -34,24 +34,28 @@ public class ManagementServiceImpl implements ManagementService {
   }
 
   @Override
-  public void addToManagement(final ManagementInfoDto dto) {
+  public void addToManagement(ManagementInfoDto dto){
     final ManagementEntity mgmtE = modelMapper.map(dto, ManagementEntity.class);
     mgmtE.setId(null);
     mgmtE.setSurname(dto.getSurname());
     mgmtE.setName(dto.getName());
-    mgmtE.setRole(dto.getRole());
+    mgmtE.setRole(dto.getMgmtRole());
     mgmtE.setContact(dto.getContact());
     repository.save(mgmtE);
   }
+
+
+
+
 
   @Override
   public void addMgmtImg(final MultipartFile file, final ManagementImgDto dto) {
     try {
       final ManagementEntity mEntity = setMgmtDetails(file, dto);
       Files.copy(
-          file.getInputStream(),
-          this.root.resolve(Objects.requireNonNull(getFileNameAndExtension(mEntity))),
-          StandardCopyOption.REPLACE_EXISTING);
+              file.getInputStream(),
+              this.root.resolve(Objects.requireNonNull(getFileNameAndExtension(mEntity))),
+              StandardCopyOption.REPLACE_EXISTING);
       repository.save(mEntity);
     } catch (final Exception e) {
       throw new FileAlreadyExistsException();

@@ -16,8 +16,8 @@ import java.util.Collections;
 public class SecurityDetailsService implements UserDetailsService {
     private final UserRepository repo;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final UserEntity byUsername = repo.findByEmailAddress(username).get();
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        final UserEntity byUsername = repo.findByEmailAddress(email).get();
 
         return new User(byUsername.getEmailAddress(), byUsername.getPassword(), Collections.singleton(new SimpleGrantedAuthority("ROLE_" + byUsername.getRole())));
     }

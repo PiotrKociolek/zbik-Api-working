@@ -5,9 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
@@ -21,6 +20,7 @@ import pl.pkociolek.zbik.exception.UserAlreadyExistException;
 import pl.pkociolek.zbik.exception.UserNotFoundException;
 import pl.pkociolek.zbik.model.Role;
 import pl.pkociolek.zbik.model.dtos.request.AdminRequestDto;
+import pl.pkociolek.zbik.model.dtos.request.UserDetailsDto;
 import pl.pkociolek.zbik.model.dtos.request.UserRequestDto;
 import pl.pkociolek.zbik.model.dtos.response.UserJWT;
 import pl.pkociolek.zbik.model.dtos.response.UserLoginResponseDto;
@@ -30,7 +30,7 @@ import pl.pkociolek.zbik.service.UserService;
 import pl.pkociolek.zbik.utilities.jwt.JwtTokenEncoder;
 
 @Service
-@Transactional
+//@Transactional
 @RequiredArgsConstructor
 class UserServiceImpl implements UserService {
 
@@ -52,18 +52,25 @@ class UserServiceImpl implements UserService {
   @Override
   public void addUser(final UserRequestDto userRequestDto) {
     final UserEntity user = modelMapper.map(userRequestDto, UserEntity.class);
-    isMailAllreadyUsed(user);
+    isMailAllreadyUsed(user); // Sprawdzenie, czy email już istnieje
     user.setId(null);
-    userRepository.save(user);
+    user.setPassword(userRequestDto.getPassword()); // Ustawienie hasła
+    user.setEmailAddress(userRequestDto.getEmail()); // Ustawienie adresu email
+    user.setName(userRequestDto.getName()); // Ustawienie imienia
+    user.setSurname(userRequestDto.getSurname()); // Ustawienie nazwiska
+    user.setRole(Role.NORMAL);
+    userRepository.save(user); // Zapisanie do bazy danych
   }
+
+
 
   // Metoda logowania użytkownika
   @Override
-  public UserLoginResponseDto loginUser(final String username, final String password) {
+  public UserLoginResponseDto loginUser(final String email, final String password) {
     return userRepository
-        .findByUsername(username)
-        .map(x -> loginUserAndReturnBearerToken(x, password))
-        .orElseThrow(UserNotFoundException::new);
+            .findByEmailAddress(email)
+            .map(x -> loginUserAndReturnBearerToken(x, password))
+            .orElseThrow(UserNotFoundException::new);
   }
 
   // Metoda usuwająca użytkownika
@@ -81,27 +88,44 @@ class UserServiceImpl implements UserService {
   @Override
   public void addAdmin(AdminRequestDto dto) {
      final UserEntity entity = modelMapper.map(dto, UserEntity.class);
+     isMailAllreadyUsed(entity);
     entity.setId(null);
-    entity.setRole(dto.getRole());
+    entity.setRole(Role.ADMIN);
+    entity.setEmailAddress(dto.getEmail());
      userRepository.save(entity);
 
   }
 
+  @Override
+  public List<UserDetailsDto> getAllUsersDetails() {
+    List<UserDetailsDto> userDetailsList = new ArrayList<>();
+    List<UserEntity> userList = userRepository.findAll();
+
+    for (UserEntity user : userList) {
+      UserDetailsDto userDetailsDto = new UserDetailsDto();
+      userDetailsDto.setFirstName(user.getName());
+      userDetailsDto.setLastName(user.getSurname());
+      userDetailsList.add(userDetailsDto);
+    }
+
+    return userDetailsList;
+  }
 
   // Metoda sprawdzająca, czy mail jest już używany
   private void isMailAllreadyUsed(final UserEntity user) {
-    userRepository
-        .findByUsernameAndEmailAddress(user.getUsername(), user.getEmailAddress())
-        .ifPresent(
+    Optional<UserEntity> existingUser = userRepository.findByEmailAddress(user.getEmailAddress());
+    existingUser.ifPresent(
             x -> {
               throw new UserAlreadyExistException();
             });
   }
 
+
   // Metoda logowania użytkownika i zwracająca token JWT
   private UserLoginResponseDto loginUserAndReturnBearerToken(
       final UserEntity entity, final String password) {
-    if (!passwordEncoder.matchPassword(entity.getPassword(), password))
+
+    if (!passwordEncoder.matchPassword(entity.getPassword(), passwordEncoder.encryptPassword(password)))
       throw new PasswordDoesNotMatchException();
 
     final UserJWT jwt = new UserJWT();
@@ -116,6 +140,7 @@ class UserServiceImpl implements UserService {
     return responseObject;
   }
 
+
   // Metoda ustawiająca szczegóły użytkownika
   private UserEntity setUserDetails(final UserRequestDto dto) {
     final UserEntity userEntity = modelMapper.map(dto, UserEntity.class);
@@ -126,9 +151,7 @@ class UserServiceImpl implements UserService {
     userEntity.setEmailAddress(dto.getEmail());
     return userEntity;
   }
-
   }
 
-  // Metoda generująca nazwę pliku
 
 

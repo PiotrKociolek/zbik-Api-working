@@ -10,19 +10,15 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.pkociolek.zbik.exception.DatabaseEntityIsNotExistException;
 import pl.pkociolek.zbik.exception.PostNotFoundException;
 import pl.pkociolek.zbik.model.PostVisibility;
-import pl.pkociolek.zbik.model.dtos.request.CreateOrUpdatePostDto;
+import pl.pkociolek.zbik.model.dtos.request.CreatePostDto;
+import pl.pkociolek.zbik.model.dtos.request.UpdatePostDto;
 import pl.pkociolek.zbik.model.dtos.response.PostResponseDto;
 import pl.pkociolek.zbik.repository.PostRepository;
-import pl.pkociolek.zbik.repository.entity.ImageEntity;
 import pl.pkociolek.zbik.repository.entity.PostEntity;
 import pl.pkociolek.zbik.service.PostImageService;
 import pl.pkociolek.zbik.service.PostService;
 
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -34,47 +30,41 @@ public class PostServiceImpl implements PostService {
 
 
   @Override
-  public void createPost(final CreateOrUpdatePostDto createOrUpdatePostDto) {
-    PostEntity postEntity = modelMapper.map(createOrUpdatePostDto, PostEntity.class);
+  public void createPost(final CreatePostDto createPostDto) {
+    PostEntity postEntity = modelMapper.map(createPostDto, PostEntity.class);
     postEntity.setId(null);
 
     // Zapisanie treści posta
-    if (createOrUpdatePostDto.getContent() != null) {
-      postEntity.setContent(createOrUpdatePostDto.getContent());
+    if (createPostDto.getContent() != null) {
+      postEntity.setContent(createPostDto.getContent());
     }
 
     // Zapisanie zdjęć
-    if (createOrUpdatePostDto.getImages() != null && !createOrUpdatePostDto.getImages().isEmpty()) {
-      for (MultipartFile file : createOrUpdatePostDto.getImages()) {
-        postImageService.addPostImg(file, createOrUpdatePostDto);
+    if (createPostDto.getImages() != null && !createPostDto.getImages().isEmpty()) {
+      for (MultipartFile file : createPostDto.getImages()) {
+        postImageService.addPostImg(file, createPostDto);
       }
     }
 
     repository.save(postEntity);
   }
-
-
 
   @Override
-  public void updatePost(final CreateOrUpdatePostDto createOrUpdatePostDto) {
-    Optional<PostEntity> optionalPostEntity = repository.findById(createOrUpdatePostDto.getId());
+  public void updatePost(UpdatePostDto updatePostDto) {
+    Optional<PostEntity> optionalPostEntity = repository.findById(updatePostDto.getId());
     PostEntity postEntity = optionalPostEntity.orElseThrow(DatabaseEntityIsNotExistException::new);
 
-    if (createOrUpdatePostDto.getContent() != null) {
-      postEntity.setContent(createOrUpdatePostDto.getContent());
+    if (updatePostDto.getContent() != null) {
+      postEntity.setContent(updatePostDto.getContent());
     }
-
-    if (createOrUpdatePostDto.getImages() != null && !createOrUpdatePostDto.getImages().isEmpty()) {
+    if (updatePostDto.getImages() != null && !updatePostDto.getImages().isEmpty()) {
       postEntity.getImages().clear();
-      for (MultipartFile file : createOrUpdatePostDto.getImages()) {
-        postImageService.addPostImg(file, createOrUpdatePostDto);
+      for (MultipartFile file : updatePostDto.getImages()) {
+        postImageService.updatePostImg(file, updatePostDto);
       }
     }
-
     repository.save(postEntity);
   }
-
-
 
 
   @Override

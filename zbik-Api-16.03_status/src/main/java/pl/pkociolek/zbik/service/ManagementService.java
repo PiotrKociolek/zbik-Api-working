@@ -7,11 +7,11 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.pkociolek.zbik.model.dtos.request.ManagementImgDto;
 import pl.pkociolek.zbik.model.dtos.response.ManagementInfoDto;
 @Service
-@Transactional
+//@Transactional
 public interface ManagementService {
 
     void deleteFromManagement(String id);
-    void addToManagement(ManagementInfoDto dto);
+    void addToManagement( ManagementInfoDto dto);
     void addMgmtImg(MultipartFile file, ManagementImgDto mgmt);
 
 

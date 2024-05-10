@@ -12,6 +12,7 @@ import pl.pkociolek.zbik.service.UserService;
 @RequestMapping("/admin")
 public class AddAdminController {
     private final UserService userService;
+
     @PostMapping(value = "/admin", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public void addAdmin(@RequestBody AdminRequestDto dto){

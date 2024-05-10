@@ -14,7 +14,7 @@ import pl.pkociolek.zbik.service.MapsService;
 public class MapsController {
     final MapsService mapsService;
 
-    @PutMapping(value = "/maps/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/maps/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void addMap(@RequestParam final MultipartFile file, @RequestBody final MapRequestDto mapRequestDto) {
         mapsService.addMap(file, mapRequestDto);
     }

@@ -1,6 +1,7 @@
 package pl.pkociolek.zbik.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import pl.pkociolek.zbik.model.dtos.request.AddHuntingCalendarDto;
 import pl.pkociolek.zbik.model.dtos.request.CalendarRequestDto;
 import pl.pkociolek.zbik.model.dtos.response.HuntingCalendarDto;
 

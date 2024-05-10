@@ -1,68 +1,75 @@
 <!DOCTYPE html>
 <html lang="pl-PL" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:remove="all">Aktywacja Konta / Resetowanie Hasła - Koło Łowieckie ŻBIK</title>
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
-    <style type="text/css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:remove="all">Resetowanie Hasła - Koło Łowieckie ŻBIK</title>
+    <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #ffffff; /* Białe */
             margin: 0;
             padding: 0;
+            background-color: #f5f5f5; /* Jasnoszary */
         }
         .container {
             width: 100%;
             max-width: 600px;
-            margin: 0 auto;
+            margin: 20px auto;
             padding: 20px;
-            background-color: #556b2f; /* Zielony oliwkowy */
+            background-color: #ffffff; /* Białe */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Cień */
         }
         h1 {
-            font-size: 24px;
-            color: #ffbf00; /* Amber */
+            font-size: 32px;
+            color: #333333; /* Czarny */
             margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 2px;
+            background-color: #689429; /* Bardziej amber */
         }
         p {
-            font-size: 16px;
+            font-size: 18px;
             color: #444444;
             margin-bottom: 20px;
-        }
-        a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid #e4e4e4;
-        }
-        td {
-            padding: 10px;
+            line-height: 1.6;
             text-align: center;
         }
-        .button {
+        a.button {
             display: inline-block;
-            background-color: #007bff;
+            background-color: #689429; /* Bardziej amber */
             color: #ffffff;
-            padding: 10px 20px;
+            padding: 12px 24px;
             text-align: center;
             text-decoration: none;
             border-radius: 5px;
             font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        a.button:hover {
+            background-color: #FFD700; /* Złoto */
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Koło Łowieckie ŻBIK</h1>
-    <p>Witaj!</p>
-    <p>Aby aktywować konto / zresetować hasło, proszę kliknąć poniższy link:</p>
-    <table>
-        <tr>
-            <td><a class="button" th:href="${activationLink}">Aktywuj Konto / Zresetuj Hasło</a></td>
-        </tr>
-    </table>
+    <p>Witaj! Aby zresetować hasło, kliknij poniższy przycisk:</p>
+    <p th:text="${message}"></p>
+    <p>
+        <a class="button" th:href="${resetLink}">Resetuj Hasło</a>
+    </p>
 </div>
 </body>
 </html>

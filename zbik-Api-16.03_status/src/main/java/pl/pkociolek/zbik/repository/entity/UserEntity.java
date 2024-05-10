@@ -23,7 +23,7 @@ public class UserEntity {
   private String password;
   private Enum Role;
   private Boolean activated;
-  private Boolean blocked;
+  private Boolean blocked = false;
   private Instant lastLoginDateTime;
   private Instant registrationDateTime;
   private Instant tokenIssueDateTime;

@@ -4,15 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RIPRequestDto {
-   /* @Id
-    String Id;*/
-   private String name;
-    private String Surname;
-
+public class AddHuntingCalendarDto {
+    private String description;
+    private String species;
 }

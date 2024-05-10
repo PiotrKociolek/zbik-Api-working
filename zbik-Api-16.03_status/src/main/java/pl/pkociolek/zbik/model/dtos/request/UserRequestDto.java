@@ -8,14 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import pl.pkociolek.zbik.model.Role;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequestDto {
 
-    @Id
-    private String id;
+
     @NotBlank
     @NotNull
     //!!@ValidPassword
@@ -33,16 +33,12 @@ public class UserRequestDto {
     @NotNull
     private Boolean activated;
     @NotNull
-    private Boolean blocked;
-    @NotBlank
-    @NotNull
-    private String signedPolicyId;
+    private Role role;
+ /*   @NotNull
+    private Boolean blocked;*/
 
-    private Instant lastLogin;
-    private Instant joinDate;
-    private Instant tokenIssueDate;
-
-
-
+ //   @NotBlank
+   // @NotNull
+    //private String signedPolicyId;
 
 }

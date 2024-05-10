@@ -12,7 +12,7 @@ import lombok.Setter;
 public class ManagementInfoDto {
     private String name;
     private String surname;
-    private String role;
+    private String mgmtRole;
     private String contact;
 
 }
