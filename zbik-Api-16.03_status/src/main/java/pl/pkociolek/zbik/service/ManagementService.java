@@ -11,8 +11,7 @@ import pl.pkociolek.zbik.model.dtos.response.ManagementInfoDto;
 public interface ManagementService {
 
     void deleteFromManagement(String id);
-    void addToManagement( ManagementInfoDto dto);
-    void addMgmtImg(MultipartFile file, ManagementImgDto mgmt);
+    void addToManagement(ManagementInfoDto dto, final MultipartFile file);
 
 
 

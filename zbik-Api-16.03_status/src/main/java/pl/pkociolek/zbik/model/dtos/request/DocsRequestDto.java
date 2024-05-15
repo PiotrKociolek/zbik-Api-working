@@ -10,7 +10,6 @@ import org.springframework.data.annotation.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DocsRequestDto {
-  @Id private String id;
   private String description;
   private String fileExtension;
   private String fileName;

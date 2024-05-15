@@ -14,7 +14,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.RequiredArgsConstructor;
 import pl.pkociolek.zbik.exception.JwtGenerationException;
-import pl.pkociolek.zbik.model.dtos.response.UserJWT;
+import pl.pkociolek.zbik.model.dtos.user.UserJWT;
 import pl.pkociolek.zbik.repository.UserRepository;
 import pl.pkociolek.zbik.repository.entity.UserEntity;
 
@@ -23,9 +23,9 @@ import pl.pkociolek.zbik.repository.entity.UserEntity;
 public class JwtTokenEncoderImpl implements JwtTokenEncoder{
     private final String encryptionVector;
     private final String encryptionKey;
-    private final int tokenExpiryDays;
+    private final int tokenExpiryHours;
     private final UserRepository accountRepository;
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
     @Override
     public boolean isTokenValid(final String bearerTokenString) {
         if (bearerTokenString == null) return false;
@@ -45,7 +45,7 @@ public class JwtTokenEncoderImpl implements JwtTokenEncoder{
     public String generateBearerJwtTokenFromModel(final UserJWT jwtToken) {
         String jsonPayload = null;
         try {
-            jwtToken.setExpirationDate(Instant.now().plus(tokenExpiryDays, ChronoUnit.DAYS));
+            jwtToken.setExpirationDate(Instant.now().plus(tokenExpiryHours, ChronoUnit.HOURS));
             jsonPayload = mapper.writeValueAsString(jwtToken);
         } catch (final JsonProcessingException e) {
             throw new JwtGenerationException();

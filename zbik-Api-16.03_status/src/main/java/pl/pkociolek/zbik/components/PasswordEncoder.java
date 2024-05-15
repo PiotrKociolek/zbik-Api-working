@@ -13,7 +13,7 @@ public class PasswordEncoder {
 
     public boolean matchPassword(final String hashedPassword, final String password) {
         final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder.matches(hashedPassword, password);
+        return encoder.matches(password, hashedPassword);
     }
 }
 

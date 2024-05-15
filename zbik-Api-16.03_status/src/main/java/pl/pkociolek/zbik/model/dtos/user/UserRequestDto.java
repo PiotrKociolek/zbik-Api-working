@@ -1,4 +1,4 @@
-package pl.pkociolek.zbik.model.dtos.request;
+package pl.pkociolek.zbik.model.dtos.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -30,10 +30,9 @@ public class UserRequestDto {
     @NotNull
     @Email
     private String email;
-    @NotNull
-    private Boolean activated;
-    @NotNull
-    private Role role;
+
+/*    @NotNull
+    private Role role;*/
  /*   @NotNull
     private Boolean blocked;*/
 

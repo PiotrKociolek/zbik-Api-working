@@ -14,5 +14,4 @@ public class ManagementInfoDto {
     private String surname;
     private String mgmtRole;
     private String contact;
-
 }

@@ -1,15 +1,15 @@
-package pl.pkociolek.zbik.model.dtos.request;
+package pl.pkociolek.zbik.model.dtos.members;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
+
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class RIPRequestDto {
+@AllArgsConstructor
+public class MembersDto {
     private String name;
-    private String Surname;
+    private String surname;
 }

@@ -1,4 +1,4 @@
-package pl.pkociolek.zbik.model.dtos.request;
+package pl.pkociolek.zbik.model.dtos.members;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,9 +7,10 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class RIPRequestDto {
+@AllArgsConstructor
+public class MembersUpdateDto {
+    @Id private String id;
     private String name;
-    private String Surname;
+    private String surname;
 }

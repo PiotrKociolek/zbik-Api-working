@@ -16,23 +16,17 @@ public class ManagementController {
     private final ManagementService managementService;
 
 
-    @DeleteMapping(value = "/management/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    void deleteFromManagement(@RequestBody String id) {
+    void deleteFromManagement(@RequestParam String id) {
         managementService.deleteFromManagement(id);
     }
 
-   /* @PostMapping(value = "/management/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public void addToManagement(@RequestParam("file") MultipartFile multipartFile, @RequestBody ManagementInfoDto infoDto, @RequestBody ManagementImgDto imgDto) {
-        managementService.addToManagement(infoDto);
-        managementService.addMgmtImg(multipartFile, imgDto);
-    }*/
-   @PostMapping(value = "/management/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+   @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
    @ResponseStatus(HttpStatus.OK)
-   public void addToManagement(@RequestParam("file") MultipartFile multipartFile, @ModelAttribute ManagementInfoDto infoDto, @ModelAttribute ManagementImgDto imgDto) {
-       managementService.addToManagement(infoDto);
-       managementService.addMgmtImg(multipartFile, imgDto);
+   public void addToManagement(@RequestParam("file") MultipartFile multipartFile,@ModelAttribute("Info") ManagementInfoDto dto) {
+     managementService.addToManagement(dto, multipartFile);
    }
 
 }

@@ -1,4 +1,4 @@
-package pl.pkociolek.zbik.model.dtos.request;
+package pl.pkociolek.zbik.model.dtos.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

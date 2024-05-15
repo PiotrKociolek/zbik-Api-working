@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pkociolek.zbik.exception.EntityNotFoundException;
 import pl.pkociolek.zbik.model.dtos.request.RIPRequestDto;
+import pl.pkociolek.zbik.model.dtos.request.RIPUpdateDto;
 import pl.pkociolek.zbik.repository.InMemoryRepository;
 import pl.pkociolek.zbik.repository.entity.InMemoryEntity;
 import pl.pkociolek.zbik.service.InMemoryService;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class InMemoryServiceImpl implements InMemoryService {
   private final ModelMapper modelMapper;
@@ -22,27 +22,30 @@ public class InMemoryServiceImpl implements InMemoryService {
 
   @Override
   public void addToMemorialPage(final RIPRequestDto dto) {
-    final InMemoryEntity inMemoryEntity = modelMapper.map(dto, InMemoryEntity.class);
-    inMemoryEntity.setId(null);
-    repository.save(inMemoryEntity);
+    final InMemoryEntity entity = modelMapper.map(dto, InMemoryEntity.class);
+    entity.setId(null);
+    entity.setName(dto.getName());
+    entity.setSurname(dto.getSurname());
+    repository.save(entity);
   }
 
-  @Override
-  public void update(final String id, final String uName, final String uSurname) {
-      Optional<InMemoryEntity> optionalEntity = repository.findById(id);
+    @Override
+    public void updateInMemory(String id, RIPUpdateDto dto) {
+        Optional<InMemoryEntity> optionalEntity = repository.findById(id);
 
-      if (optionalEntity.isPresent()) {
-          InMemoryEntity inMemoryEntity = optionalEntity.get();
-          inMemoryEntity.setSurname(uSurname);
-          inMemoryEntity.setName(uName);
-          repository.save(inMemoryEntity);}
-          else {
-              throw new EntityNotFoundException();
-          }
-  }
+        if (optionalEntity.isPresent()) {
+            InMemoryEntity inMemoryEntity = optionalEntity.get();
+            inMemoryEntity.setName(dto.getName());
+            inMemoryEntity.setSurname(dto.getSurname());
+            repository.save(inMemoryEntity);
+        } else {
+            throw new EntityNotFoundException();
+        }
+    }
 
-  @Override
-  public List<InMemoryEntity> getListOfAll(final InMemoryEntity entity) {
+
+    @Override
+  public List<InMemoryEntity> getListOfAll() {
     return repository.findAll();
   }
 

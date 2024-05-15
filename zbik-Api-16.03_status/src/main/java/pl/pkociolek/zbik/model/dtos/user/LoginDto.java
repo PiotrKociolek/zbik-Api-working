@@ -1,4 +1,4 @@
-package pl.pkociolek.zbik.model.dtos.request;
+package pl.pkociolek.zbik.model.dtos.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

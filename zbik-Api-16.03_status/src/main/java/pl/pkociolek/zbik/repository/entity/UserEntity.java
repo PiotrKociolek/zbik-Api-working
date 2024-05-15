@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import pl.pkociolek.zbik.model.Role;
 
 @Getter
 @Setter
@@ -21,8 +22,8 @@ public class UserEntity {
   private String phoneNumber;
   private String emailAddress;
   private String password;
-  private Enum Role;
-  private Boolean activated;
+  private Role role;
+  private Boolean activated = false;
   private Boolean blocked = false;
   private Instant lastLoginDateTime;
   private Instant registrationDateTime;

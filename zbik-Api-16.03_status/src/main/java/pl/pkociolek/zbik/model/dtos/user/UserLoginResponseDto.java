@@ -1,6 +1,5 @@
-package pl.pkociolek.zbik.model.dtos.response;
+package pl.pkociolek.zbik.model.dtos.user;
 
-import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserJWT {
-    private String id;
+public class UserLoginResponseDto {
     private String email;
-    private Instant expirationDate;
+    private String token;
 }

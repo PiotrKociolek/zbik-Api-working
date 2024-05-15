@@ -1,4 +1,4 @@
-package pl.pkociolek.zbik.model.dtos.response;
+package pl.pkociolek.zbik.model.dtos.user;
 
 import java.time.Instant;
 import lombok.AllArgsConstructor;

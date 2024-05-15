@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.pkociolek.zbik.model.dtos.response.UserJWT;
+import pl.pkociolek.zbik.model.dtos.user.UserJWT;
 import pl.pkociolek.zbik.utilities.jwt.JwtTokenEncoder;
 
 import java.io.IOException;

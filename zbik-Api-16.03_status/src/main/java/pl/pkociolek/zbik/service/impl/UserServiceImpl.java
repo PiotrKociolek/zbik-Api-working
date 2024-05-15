@@ -1,29 +1,23 @@
 package pl.pkociolek.zbik.service.impl;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import pl.pkociolek.zbik.components.PasswordEncoder;
-import pl.pkociolek.zbik.exception.FileAlreadyExistsException;
 import pl.pkociolek.zbik.exception.PasswordDoesNotMatchException;
 import pl.pkociolek.zbik.exception.UserAlreadyExistException;
 import pl.pkociolek.zbik.exception.UserNotFoundException;
 import pl.pkociolek.zbik.model.Role;
 import pl.pkociolek.zbik.model.dtos.request.AdminRequestDto;
-import pl.pkociolek.zbik.model.dtos.request.UserDetailsDto;
-import pl.pkociolek.zbik.model.dtos.request.UserRequestDto;
-import pl.pkociolek.zbik.model.dtos.response.UserJWT;
-import pl.pkociolek.zbik.model.dtos.response.UserLoginResponseDto;
+import pl.pkociolek.zbik.model.dtos.user.UserDetailsDto;
+import pl.pkociolek.zbik.model.dtos.user.UserRequestDto;
+import pl.pkociolek.zbik.model.dtos.user.UserJWT;
+import pl.pkociolek.zbik.model.dtos.user.UserLoginResponseDto;
 import pl.pkociolek.zbik.repository.UserRepository;
 import pl.pkociolek.zbik.repository.entity.UserEntity;
 import pl.pkociolek.zbik.service.UserService;
@@ -54,15 +48,13 @@ class UserServiceImpl implements UserService {
     final UserEntity user = modelMapper.map(userRequestDto, UserEntity.class);
     isMailAllreadyUsed(user); // Sprawdzenie, czy email już istnieje
     user.setId(null);
-    user.setPassword(userRequestDto.getPassword()); // Ustawienie hasła
+    user.setPassword(passwordEncoder.encryptPassword(userRequestDto.getPassword())); // Ustawienie hasła
     user.setEmailAddress(userRequestDto.getEmail()); // Ustawienie adresu email
     user.setName(userRequestDto.getName()); // Ustawienie imienia
     user.setSurname(userRequestDto.getSurname()); // Ustawienie nazwiska
     user.setRole(Role.NORMAL);
     userRepository.save(user); // Zapisanie do bazy danych
   }
-
-
 
   // Metoda logowania użytkownika
   @Override
@@ -123,9 +115,9 @@ class UserServiceImpl implements UserService {
 
   // Metoda logowania użytkownika i zwracająca token JWT
   private UserLoginResponseDto loginUserAndReturnBearerToken(
-      final UserEntity entity, final String password) {
+          final UserEntity entity, final String password) {
 
-    if (!passwordEncoder.matchPassword(entity.getPassword(), passwordEncoder.encryptPassword(password)))
+    if (!passwordEncoder.matchPassword(entity.getPassword(), password))
       throw new PasswordDoesNotMatchException();
 
     final UserJWT jwt = new UserJWT();

@@ -1,5 +1,6 @@
 package pl.pkociolek.zbik.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,9 +23,9 @@ public class JwtTokenEncoderConfiguration {
     String encryptionKey;
     @Value("${token.expiry.hours:1}")
     int tokenExpiryHours;
-
+    private final ObjectMapper mapper;
     @Bean
     JwtTokenEncoder getJwtTokenEncoder() {
-        return new JwtTokenEncoderImpl(encryptionVector, encryptionKey, tokenExpiryHours, accountRepository);
+        return new JwtTokenEncoderImpl(encryptionVector, encryptionKey, tokenExpiryHours, accountRepository,mapper);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import pl.pkociolek.zbik.exception.DatabaseEntityIsNotExistException;
 import pl.pkociolek.zbik.exception.FileAlreadyExistsException;
+import pl.pkociolek.zbik.model.dtos.docs.DocsUpdate;
 import pl.pkociolek.zbik.model.dtos.request.DocsRequestDto;
 import pl.pkociolek.zbik.repository.DocumentsRepository;
 import pl.pkociolek.zbik.repository.entity.DocsEntity;
@@ -17,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -27,30 +30,28 @@ import java.util.Random;
 public class DocsServiceImpl implements DocsService {
     private final DocumentsRepository repository;
     private final ModelMapper modelMapper;
-    private final Path root = Paths.get("uploads");
-    @Override
-    public void addDesc(DocsRequestDto dto) {
-        final DocsEntity mapsEntity = modelMapper.map(dto, DocsEntity.class);
-        mapsEntity.setId(null);
-        repository.save(mapsEntity);
-    }
+    private final Path root = Paths.get("uploads/docs");
+
 
     @Override
     public void addDocs(MultipartFile file, DocsRequestDto dto){
+        final  DocsEntity entity = modelMapper.map(dto, DocsEntity.class);
+        uploadFolderExists();
         try {
-            final DocsEntity uEntity= setDocsDetails(file,dto);
+            final DocsEntity docsEntity= setDocsDetails(file,dto);
             Files.copy(
                     file.getInputStream(),
-                    this.root.resolve(Objects.requireNonNull(getFileNameANdExtension(uEntity))),
+                    this.root.resolve(Objects.requireNonNull(getFileNameANdExtension(docsEntity))),
                     StandardCopyOption.REPLACE_EXISTING);
-            repository.save(uEntity);
+            repository.save(docsEntity);
         } catch (final Exception e) {
             throw new FileAlreadyExistsException();
         }
+        repository.save(entity);
     }
 
     @Override
-    public void  editDescription(DocsRequestDto dto) {
+    public void update(DocsUpdate dto) {
         final Optional<DocsEntity> postEntity =repository.findById(dto.getId());
         postEntity.ifPresentOrElse(x->updateDescFunction(x,dto), DatabaseEntityIsNotExistException::new);
     }
@@ -63,14 +64,18 @@ public class DocsServiceImpl implements DocsService {
             final MultipartFile file, final DocsRequestDto dto) {
         final DocsEntity docs =  modelMapper.map(dto, DocsEntity.class);
         docs.setId(null);
-        docs.setObfuscatedFileName(generateFilename());
+        docs.setDescription(dto.getDescription());
+        docs.setObfuscatedFileName(generateUniqueFileName());
+        String[] extension = file.getOriginalFilename().split("\\.");
+        docs.setFileExtension(extension[extension.length-1]);
         return  docs;
     }
 
-    private String generateFilename() {
-        final byte[] array = new byte[15];
-        new Random().nextBytes(array);
-        return new String(array, StandardCharsets.UTF_8);
+    private static String generateUniqueFileName()
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        String timestamp = dateFormat.format(new Date());
+        return "file_" + timestamp ;
     }
 
     private String getFileNameANdExtension(final DocsEntity docs) {
@@ -79,8 +84,18 @@ public class DocsServiceImpl implements DocsService {
 
         return String.format("%s.%s", filename, extension);
     }
-    private void updateDescFunction (DocsEntity docs, DocsRequestDto dto){
+    private void updateDescFunction (DocsEntity docs, DocsUpdate dto){
         docs.setDescription(dto.getDescription());
         repository.save(docs);
     }
+
+    private void uploadFolderExists() {
+        if (!Files.exists(root)) {
+            try {
+                Files.createDirectories(root);
+            } catch (Exception e) {
+                throw new RuntimeException("Nie można utworzyć katalogu upload");
+            }
+        }
     }
+}

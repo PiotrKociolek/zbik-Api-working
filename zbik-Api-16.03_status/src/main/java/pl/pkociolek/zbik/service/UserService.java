@@ -1,9 +1,9 @@
 package pl.pkociolek.zbik.service;
 
-import org.springframework.web.multipart.MultipartFile;
-import pl.pkociolek.zbik.model.Role;
 import pl.pkociolek.zbik.model.dtos.request.*;
-import pl.pkociolek.zbik.model.dtos.response.UserLoginResponseDto;
+import pl.pkociolek.zbik.model.dtos.user.UserLoginResponseDto;
+import pl.pkociolek.zbik.model.dtos.user.UserDetailsDto;
+import pl.pkociolek.zbik.model.dtos.user.UserRequestDto;
 import pl.pkociolek.zbik.repository.entity.UserEntity;
 
 import java.util.List;

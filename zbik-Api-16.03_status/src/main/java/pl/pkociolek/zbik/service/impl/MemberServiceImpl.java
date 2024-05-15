@@ -5,8 +5,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.pkociolek.zbik.exception.EntityNotFoundException;
-import pl.pkociolek.zbik.model.dtos.request.MemberListDto;
-import pl.pkociolek.zbik.repository.UserRepository;
+import pl.pkociolek.zbik.model.dtos.members.MembersDto;
+import pl.pkociolek.zbik.model.dtos.members.MembersUpdateDto;
+import pl.pkociolek.zbik.repository.MemberRepository;
+import pl.pkociolek.zbik.repository.entity.MembersEntity;
 import pl.pkociolek.zbik.repository.entity.UserEntity;
 import pl.pkociolek.zbik.service.MemberService;
 
@@ -19,23 +21,25 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
 
     private final ModelMapper modelMapper;
-    private final UserRepository repository;
+    private final MemberRepository repository;
 
     @Override
-    public void addToMemberList(MemberListDto dto) {
-        final UserEntity entity = modelMapper.map(dto, UserEntity.class);
+    public void addToMemberList(MembersDto dto) {
+        final MembersEntity entity = modelMapper.map(dto, MembersEntity.class);
         entity.setId(null);
+        entity.setName(dto.getName());
+        entity.setSurname(dto.getSurname());
         repository.save(entity);
     }
 
     @Override
-    public void update(final String id, final String uName, final String uSurname) {
-        Optional<UserEntity> optionalEntity = repository.findById(id);
+    public void update(String id, MembersUpdateDto dto) {
+        Optional<MembersEntity> optionalEntity = repository.findById(id);
 
         if (optionalEntity.isPresent()) {
-            UserEntity entity = optionalEntity.get();
-            entity.setSurname(uSurname);
-            entity.setName(uName);
+            MembersEntity entity = optionalEntity.get();
+            entity.setName(dto.getName());
+            entity.setSurname(dto.getSurname());
             repository.save(entity);
         } else {
             throw new EntityNotFoundException();
@@ -43,7 +47,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<UserEntity> getListOfAll() {
+    public List<MembersEntity> getListOfAll() {
         return repository.findAll();
     }
 
