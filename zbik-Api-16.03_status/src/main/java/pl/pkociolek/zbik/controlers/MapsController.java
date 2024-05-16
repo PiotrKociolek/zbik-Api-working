@@ -23,10 +23,5 @@ public class MapsController {
     void deleteMapById(@PathVariable("id") final String id) {
         mapsService.deleteMapById(id);
     }
-
-    @PutMapping(value = "/maps/add-desc", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.OK)
-    void addDescription(@RequestBody final MapRequestDto mapRequestDto) {
-        mapsService.addDescription(mapRequestDto);
     }
-}
+

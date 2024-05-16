@@ -23,5 +23,4 @@ public class AdminRequestDto {
     @NotNull
     @Email
     private String email;
-    private Role role;
 }

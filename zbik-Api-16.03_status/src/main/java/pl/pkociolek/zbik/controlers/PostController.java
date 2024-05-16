@@ -7,7 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import pl.pkociolek.zbik.model.PostVisibility;
+import org.springframework.web.multipart.MultipartFile;
+import pl.pkociolek.zbik.model.Visibility;
 import pl.pkociolek.zbik.model.dtos.request.CreatePostDto;
 import pl.pkociolek.zbik.model.dtos.request.UpdatePostDto;
 import pl.pkociolek.zbik.model.dtos.response.PostResponseDto;
@@ -24,8 +25,8 @@ public class PostController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void createPost(@ModelAttribute final CreatePostDto createPostDto) {
-        postService.createPost(createPostDto);
+    public void createPost(@ModelAttribute CreatePostDto dto,@ModelAttribute MultipartFile file) {
+        postService.createPost(dto, file);
     }
     @PutMapping(value = "/posts/{postId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
@@ -52,7 +53,7 @@ public class PostController {
 
     @GetMapping(value = "/posts/list/visibility/{postVisibility}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    Page<PostResponseDto> getPostsByVisibility( @PathVariable("postVisibility") PostVisibility postVisibility, Pageable pageable){
+    Page<PostResponseDto> getPostsByVisibility(@PathVariable("postVisibility") Visibility postVisibility, Pageable pageable){
       return postService.getPostsByVisibility(postVisibility,pageable);
     };
 

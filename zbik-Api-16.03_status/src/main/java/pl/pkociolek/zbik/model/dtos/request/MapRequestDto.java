@@ -1,10 +1,15 @@
 package pl.pkociolek.zbik.model.dtos.request;
 
-import org.springframework.data.annotation.Id;
-
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MapRequestDto {
- // @Id private String id;
   private String description;
-  private String fileName;
+  private String obfuscatedFileName;
   private String extension;
 }

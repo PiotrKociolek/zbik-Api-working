@@ -1,6 +1,6 @@
 package pl.pkociolek.zbik.repository.entity;
 
-import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pl.pkociolek.zbik.model.Role;
+import pl.pkociolek.zbik.model.Visibility;
 
 @Getter
 @Setter
@@ -20,9 +20,9 @@ public class GalleryEntity {
     @Id private String id;
     private String title;
     private Set<String> categoryId;
-    private Instant createdAt;
-    private Role role;
+    private String createdAt;
     private String fileExtension;
     private String fileName;
     private String obfuscatedFileName;
+    private List<GalleryEntity> entityList;
 }

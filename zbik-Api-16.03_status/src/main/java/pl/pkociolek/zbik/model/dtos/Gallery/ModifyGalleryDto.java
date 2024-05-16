@@ -1,8 +1,5 @@
-package pl.pkociolek.zbik.model.dtos.request;
+package pl.pkociolek.zbik.model.dtos.Gallery;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,11 +8,14 @@ import org.springframework.data.annotation.Id;
 import pl.pkociolek.zbik.model.Role;
 import pl.pkociolek.zbik.repository.entity.GalleryEntity;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Set;
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GalleryRequestDto {
+public class ModifyGalleryDto {
     @Id
     private String Id;
     private String title;
@@ -27,4 +27,3 @@ public class GalleryRequestDto {
     private List<GalleryEntity> entityList;
 
 }
-

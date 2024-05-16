@@ -6,7 +6,6 @@ import pl.pkociolek.zbik.model.dtos.request.DocsRequestDto;
 
 public interface DocsService {
     void addDocs(MultipartFile file, DocsRequestDto dto);
-    void update(DocsUpdate dto);
     void deleteById(String id);
 
 }

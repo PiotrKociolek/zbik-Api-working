@@ -84,8 +84,22 @@ class UserServiceImpl implements UserService {
     entity.setId(null);
     entity.setRole(Role.ADMIN);
     entity.setEmailAddress(dto.getEmail());
+    entity.setPassword(dto.getPassword());
+    entity.setActivated(true);
      userRepository.save(entity);
 
+  }
+
+  @Override
+  public void addModerator(AdminRequestDto dto) {
+    final UserEntity entity = modelMapper.map(dto, UserEntity.class);
+    isMailAllreadyUsed(entity);
+    entity.setId(null);
+    entity.setRole(Role.MODERATOR);
+    entity.setEmailAddress(dto.getEmail());
+    entity.setPassword(dto.getPassword());
+    entity.setActivated(true);
+    userRepository.save(entity);
   }
 
   @Override

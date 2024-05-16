@@ -1,6 +1,6 @@
 package pl.pkociolek.zbik.model;
 
-public enum PostVisibility {
+public enum Visibility {
   PUBLIC,
   INTERNAL,
   PRIVATE

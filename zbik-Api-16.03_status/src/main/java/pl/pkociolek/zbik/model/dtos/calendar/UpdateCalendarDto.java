@@ -1,15 +1,17 @@
-package pl.pkociolek.zbik.model.dtos.response;
+package pl.pkociolek.zbik.model.dtos.calendar;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class HuntingCalendarDto {
+public class UpdateCalendarDto {
+    @Id private String Id;
     private String description;
     private String species;
 

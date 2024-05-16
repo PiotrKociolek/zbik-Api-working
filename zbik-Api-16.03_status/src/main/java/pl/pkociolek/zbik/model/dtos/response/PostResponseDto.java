@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.pkociolek.zbik.model.PostVisibility;
+import pl.pkociolek.zbik.model.Visibility;
 
 import java.time.Instant;
 @Getter
@@ -18,5 +18,5 @@ public class PostResponseDto {
     private String userId;
     private Instant creationDateTime;
     private Instant modificationDateTime;
-    private PostVisibility postVisibility;
+    private Visibility postVisibility;
 }

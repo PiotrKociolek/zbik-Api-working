@@ -2,14 +2,15 @@ package pl.pkociolek.zbik.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import pl.pkociolek.zbik.model.PostVisibility;
+import org.springframework.web.multipart.MultipartFile;
+import pl.pkociolek.zbik.model.Visibility;
 import pl.pkociolek.zbik.model.dtos.request.CreatePostDto;
 import pl.pkociolek.zbik.model.dtos.request.UpdatePostDto;
 import pl.pkociolek.zbik.model.dtos.response.PostResponseDto;
 
 public interface PostService {
 
-    void createPost(CreatePostDto createPostDto);
+    void createPost( CreatePostDto dto, MultipartFile file);
 
     void updatePost(UpdatePostDto updatePostDto);
 
@@ -19,7 +20,7 @@ public interface PostService {
 
     Page<PostResponseDto> getAllPosts(Pageable pageable);
 
-    Page<PostResponseDto> getPostsByVisibility( PostVisibility postVisibility, Pageable pageable);
+    Page<PostResponseDto> getPostsByVisibility(Visibility postVisibility, Pageable pageable);
 
 
   }

@@ -21,11 +21,7 @@ public class DocumentsController {
     void save(@RequestParam(value = "file")MultipartFile file, @ModelAttribute DocsRequestDto dto){
         docsService.addDocs(file, dto);
     };
-    @PutMapping(value = "/edit/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.OK)
-    void editDescription(@RequestBody DocsUpdate dto){
-        docsService.update(dto);
-    };
+
     @DeleteMapping(value ="/documents/delete/{id}" ,produces = MediaType.APPLICATION_JSON_VALUE)
     void deleteById(@PathVariable("id") String id){
         docsService.deleteById(id);

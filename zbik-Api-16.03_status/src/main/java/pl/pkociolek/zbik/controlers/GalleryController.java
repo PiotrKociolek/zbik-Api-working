@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.pkociolek.zbik.model.dtos.Gallery.ModifyGalleryDto;
 import pl.pkociolek.zbik.model.dtos.request.GalleryRequestDto;
 import pl.pkociolek.zbik.repository.entity.GalleryEntity;
 import pl.pkociolek.zbik.service.GalleryService;
@@ -38,8 +39,8 @@ final GalleryService galleryService;
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    void modify(GalleryRequestDto galleryRequestDto, MultipartFile file){
-        galleryService.modify(galleryRequestDto,file);
+    void modify(ModifyGalleryDto dto, MultipartFile file){
+        galleryService.modify(dto,file);
     };
     @GetMapping (value = " /gallery/",
     produces = MediaType.APPLICATION_JSON_VALUE,

@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import pl.pkociolek.zbik.exception.CannotCreateUploadFolderException;
 import pl.pkociolek.zbik.exception.FileAlreadyExistsException;
 import pl.pkociolek.zbik.model.dtos.request.ManagementImgDto;
 import pl.pkociolek.zbik.model.dtos.response.ManagementInfoDto;
@@ -87,7 +88,7 @@ public class ManagementServiceImpl implements ManagementService {
             try {
                 Files.createDirectories(root);
             } catch (Exception e) {
-                throw new RuntimeException("Nie można utworzyć katalogu upload");
+                throw new CannotCreateUploadFolderException();
             }
         }
 }

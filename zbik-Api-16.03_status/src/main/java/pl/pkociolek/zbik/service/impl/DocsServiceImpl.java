@@ -30,7 +30,7 @@ import java.util.Random;
 public class DocsServiceImpl implements DocsService {
     private final DocumentsRepository repository;
     private final ModelMapper modelMapper;
-    private final Path root = Paths.get("uploads/docs");
+    private final Path root = Paths.get("uploads");
 
 
     @Override
@@ -50,11 +50,7 @@ public class DocsServiceImpl implements DocsService {
         repository.save(entity);
     }
 
-    @Override
-    public void update(DocsUpdate dto) {
-        final Optional<DocsEntity> postEntity =repository.findById(dto.getId());
-        postEntity.ifPresentOrElse(x->updateDescFunction(x,dto), DatabaseEntityIsNotExistException::new);
-    }
+
 
     @Override
     public void deleteById(String id) {
@@ -75,7 +71,7 @@ public class DocsServiceImpl implements DocsService {
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String timestamp = dateFormat.format(new Date());
-        return "file_" + timestamp ;
+        return "doc_" + timestamp ;
     }
 
     private String getFileNameANdExtension(final DocsEntity docs) {
@@ -84,10 +80,7 @@ public class DocsServiceImpl implements DocsService {
 
         return String.format("%s.%s", filename, extension);
     }
-    private void updateDescFunction (DocsEntity docs, DocsUpdate dto){
-        docs.setDescription(dto.getDescription());
-        repository.save(docs);
-    }
+
 
     private void uploadFolderExists() {
         if (!Files.exists(root)) {

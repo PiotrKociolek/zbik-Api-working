@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import pl.pkociolek.zbik.exception.CannotCreateUploadFolderException;
 import pl.pkociolek.zbik.exception.FileAlreadyExistsException;
 import pl.pkociolek.zbik.model.dtos.request.MapRequestDto;
 import pl.pkociolek.zbik.repository.MapsRepository;
@@ -15,11 +16,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Random;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class MapsServiceImpl implements MapsService {
 private final MapsRepository repository;
@@ -27,16 +29,18 @@ private final ModelMapper modelMapper;
     private final Path root = Paths.get("uploads");
     @Override
     public void addMap(MultipartFile file, MapRequestDto dto){
+        final  MapsEntity mapsEntity = modelMapper.map(dto,MapsEntity.class);
+        uploadFolderExists();
         try {
-            final MapsEntity mEntity= setMapDetails(file,dto);
+            final MapsEntity entity= setMapDetails(file,dto);
             Files.copy(
                     file.getInputStream(),
-                    this.root.resolve(Objects.requireNonNull(getFileNameANdExtension(mEntity))),
+                    this.root.resolve(Objects.requireNonNull(getFileNameANdExtension(entity))),
                     StandardCopyOption.REPLACE_EXISTING);
-            repository.save(mEntity);
         } catch (final Exception e) {
             throw new FileAlreadyExistsException();
         }
+        repository.save(mapsEntity);
     }
 
     @Override
@@ -44,25 +48,24 @@ private final ModelMapper modelMapper;
          repository.deleteById(id);
     }
 
-    @Override
-    public void addDescription(MapRequestDto mapRequestDto) {
-        final MapsEntity mapsEntity = modelMapper.map(mapRequestDto, MapsEntity.class);
-        mapsEntity.setId(null);
-        repository.save(mapsEntity);
-    }
+
 
 
     private MapsEntity setMapDetails(
             final MultipartFile file, final MapRequestDto dto){
-        final MapsEntity MgmtEntity = modelMapper.map(dto, MapsEntity.class);
-        MgmtEntity.setId(null);
-        MgmtEntity.setObfuscatedFileName(generateFilename());
-        return MgmtEntity;
+        final MapsEntity entity = modelMapper.map(dto, MapsEntity.class);
+        entity.setId(null);
+        entity.setDescription(dto.getDescription());
+        entity.setObfuscatedFileName(generateUniqueFileName());
+        String[] extension = file.getOriginalFilename().split("\\.");
+        entity.setFileExtension(extension[extension.length-1]);
+        return entity;
     }
-    private String generateFilename() {
-        final byte[] array = new byte[31];
-        new Random().nextBytes(array);
-        return new String(array, StandardCharsets.UTF_8);
+    private static String generateUniqueFileName()
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        String timestamp = dateFormat.format(new Date());
+        return "file_" + timestamp ;
     }
 
     private String getFileNameANdExtension(final MapsEntity gallery) {
@@ -71,4 +74,13 @@ private final ModelMapper modelMapper;
 
         return String.format("%s.%s", filename, extension);
     }
+    private void uploadFolderExists() {
+        if (!Files.exists(root)) {
+            try {
+                Files.createDirectories(root);
+            } catch (Exception e) {
+                throw new CannotCreateUploadFolderException();
+            }
+        }
+}
 }

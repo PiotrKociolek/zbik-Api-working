@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
-import pl.pkociolek.zbik.model.PostVisibility;
+import pl.pkociolek.zbik.model.Visibility;
 
 import java.time.Instant;
 import java.util.List;
@@ -21,7 +21,7 @@ public class UpdatePostDto {
     private String userId;
     private Instant creationDateTime;
     private Instant modificationDateTime;
-    private PostVisibility postVisibility;
+    private Visibility postVisibility;
     private List<MultipartFile> images;
 }
 

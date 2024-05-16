@@ -1,16 +1,16 @@
 package pl.pkociolek.zbik.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import pl.pkociolek.zbik.model.dtos.calendar.UpdateCalendarDto;
 import pl.pkociolek.zbik.model.dtos.request.AddHuntingCalendarDto;
 import pl.pkociolek.zbik.model.dtos.request.CalendarRequestDto;
 import pl.pkociolek.zbik.model.dtos.response.HuntingCalendarDto;
 
 public interface HuntingCalendarService {
-    void addDescription(HuntingCalendarDto huntingCalendarDto);
-    void addSpecies(HuntingCalendarDto huntingCalendarDto);
 
-    void editDescription(HuntingCalendarDto huntingCalendarDto);
-    void deleteFromTable(String id);
-    void addIcon(MultipartFile file, CalendarRequestDto dto);
+    void addItemToCalendar(HuntingCalendarDto huntingCalendarDto, MultipartFile file);
+    void updateCalendarItem(UpdateCalendarDto dto, MultipartFile file);
+    void delete (String id);
+
 
 }

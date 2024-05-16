@@ -17,6 +17,7 @@ public interface UserService {
   void deleteUser(String id);
   List<UserEntity> getAllUsersList(String surname);
   void addAdmin(AdminRequestDto dto);
+  void addModerator(AdminRequestDto dto);
   List<UserDetailsDto> getAllUsersDetails();
 
 

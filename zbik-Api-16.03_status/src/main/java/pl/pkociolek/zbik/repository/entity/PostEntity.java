@@ -1,15 +1,12 @@
 package pl.pkociolek.zbik.repository.entity;
 
-import java.time.Instant;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import pl.pkociolek.zbik.model.PostVisibility;
+import pl.pkociolek.zbik.model.Visibility;
 
 @Getter
 @Setter
@@ -21,10 +18,12 @@ public class PostEntity {
   private String content;
   private String title;
   private String userId;
-  private Instant creationDateTime;
-  private Instant modificationDateTime;
-  private PostVisibility postVisibility;
-
-  private List<ImageEntity> images;
+  private String creationDateTime;
+  private String modificationDateTime;
+  private Visibility postVisibility;
+  private String fileExtension;
+  private String obfuscatedFileName;
+  private String titleObfuscatedFileName;
+  private String titleFileExtension;
 
 }
