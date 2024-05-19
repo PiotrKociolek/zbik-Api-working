@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import pl.pkociolek.zbik.configuration.properties.email.EmailProperties;
 
+/*
 @Configuration
 @RequiredArgsConstructor
 public class JavaMailSenderConfiguration {
@@ -36,3 +37,4 @@ public class JavaMailSenderConfiguration {
     return javaMailSender;
   }
 }
+*/

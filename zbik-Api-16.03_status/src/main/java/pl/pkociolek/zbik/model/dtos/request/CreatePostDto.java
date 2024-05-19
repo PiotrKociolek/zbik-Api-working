@@ -19,8 +19,7 @@ public class CreatePostDto {
     private String title;
     private String userId;
     private Instant creationDateTime;
-    private Instant modificationDateTime;
-    private Visibility postVisibility;
+
     private String fileExtension;
     private String obfuscatedFileName;
     private String titleObfuscatedFileName;

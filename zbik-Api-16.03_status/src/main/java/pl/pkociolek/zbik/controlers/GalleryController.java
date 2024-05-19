@@ -18,31 +18,30 @@ import java.util.List;
 public class GalleryController {
 final GalleryService galleryService;
     @PostMapping(
-            value = "/gallery/",
+            value = "/add",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseStatus(value = HttpStatus.CREATED)
     public void addGallery(
-            @RequestBody final GalleryRequestDto galleryRequestDto,
-            @RequestParam(value = "file") final MultipartFile file) {
-        galleryService.addNewGallery(file, galleryRequestDto);
+          @ModelAttribute GalleryRequestDto dto,@ModelAttribute MultipartFile miniature,@ModelAttribute MultipartFile[] files) {
+        galleryService.addNewGallery(dto,miniature, files);
     }
 
     @DeleteMapping(
-            value ="/gallery/{id}",
+            value ="/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     void deleteGalleryById(@PathVariable("id") String  id){
         galleryService.deleteById(id);
     };
-    @PutMapping (value = " /gallery/",
+    @PutMapping (value = " /update",
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     void modify(ModifyGalleryDto dto, MultipartFile file){
         galleryService.modify(dto,file);
     };
-    @GetMapping (value = " /gallery/",
+    @GetMapping (value = "/",
     produces = MediaType.APPLICATION_JSON_VALUE,
     consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)

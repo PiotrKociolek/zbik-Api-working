@@ -4,10 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import pl.pkociolek.zbik.model.dtos.token.TokenDto;
+import pl.pkociolek.zbik.model.dtos.mail.MailRequest;
 import pl.pkociolek.zbik.model.dtos.user.ResetPasswordDto;
 import pl.pkociolek.zbik.model.dtos.user.UserRequestDto;
 import pl.pkociolek.zbik.model.dtos.user.UserLoginResponseDto;
+import pl.pkociolek.zbik.repository.entity.UserEntity;
 import pl.pkociolek.zbik.service.UserService;
 
 @RestController
@@ -20,7 +21,11 @@ public class UserController {
  public UserLoginResponseDto login(@RequestParam("email") String email, @RequestParam("password") String password) {
      return userService.loginUser(email, password);
  }
-
+    @PostMapping("/send-reset-email")
+    public void sendResetPasswordEmail(@RequestBody  MailRequest dto) {
+        // Wywołujemy metodę sendResetPasswordEmail z serwisu EmailService
+        userService.sendResetPasswordEmail(dto);
+    }
   @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(value = HttpStatus.CREATED)
   public void addUser(@RequestBody final UserRequestDto dto) {
@@ -33,11 +38,11 @@ public class UserController {
     userService.deleteUser(id);
   }
 
-@PostMapping(value = "/forgot-password", produces =  MediaType.APPLICATION_JSON_VALUE)
+/*@PostMapping(value = "/forgot-password", produces =  MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public String forgotPassword(@RequestParam ResetPasswordDto dto) {
-    return userService.forgotPassword(dto);
-}
+    public String forgotPassword(@RequestParam MailRequest dto) {
+    return userService.resetPassword(dto);
+}*/
 
 
 }

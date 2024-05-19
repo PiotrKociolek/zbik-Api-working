@@ -121,9 +121,6 @@ private ImgEntity addMiniatureImg(MultipartFile file){
     postEntity.setModificationDateTime(cretionDate);    repository.save(postEntity);
   }
 
-  private void addToImgSet(CreatePostDto dto){
-    final ImgEntity entity;
-  }
   private static String generateUniqueFileName()
   {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");

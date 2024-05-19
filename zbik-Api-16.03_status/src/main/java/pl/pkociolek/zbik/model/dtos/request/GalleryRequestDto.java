@@ -19,12 +19,10 @@ public class GalleryRequestDto {
     @Id
     private String Id;
     private String title;
-    private Set<String> categoryId;
     private Instant createdAt;
-    private Role role;
-    private String fileExtension;
+    private String obfuscatedFileName;
     private String fileName;
-    private List<GalleryEntity> entityList;
-
+    private Set<String> imgEntityList;
+    private String setTitleImgId;
 }
 

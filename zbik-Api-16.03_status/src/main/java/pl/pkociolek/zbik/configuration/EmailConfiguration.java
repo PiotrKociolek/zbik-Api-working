@@ -44,5 +44,25 @@ public class EmailConfiguration {
 
     @Value("${EMAIL_PASSWORD:Dupa1234}")
     private String mailSenderPassword;
+
+    @Bean
+    public JavaMailSender getJavaMailSender(){
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(mailSenderHost);
+        mailSender.setPort(mailSenderPort);
+
+        mailSender.setUsername(mailSenderUsername);
+        mailSender.setPassword(mailSenderPassword);
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", transportProtocol);
+        props.put("mail.smtp.auth", smtpAuth.toString());
+        props.put("mail.smtp.starttls.enable", startSslEnable.toString());
+        props.put("mail.smtp.starttls.required", startSslRequired.toString());
+        props.put("mail.smtp.ssl.enable", enableSsl.toString());
+        props.put("mail.debug", debugMode.toString());
+
+        return mailSender;
+    }
 }
 

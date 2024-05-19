@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pl.pkociolek.zbik.repository.PendingEmailRepository;
 import pl.pkociolek.zbik.repository.entity.PendingEmailEntity;
 import pl.pkociolek.zbik.service.EmailSchedulerService;
@@ -45,7 +44,7 @@ class EmailSchedulerServiceImpl implements EmailSchedulerService {
 
   @Override
   public void sendEmail(final String userId, final String topic, final String content) {
-    addEmailToSenderQueue(userId, topic, content, DEFAULT_HEADER, EmailTemplate.DEFAULT);
+    addEmailToSenderQueue(userId, topic, content, DEFAULT_HEADER, EmailTemplate.RESET_TEMPLATE);
   }
 
   @Override

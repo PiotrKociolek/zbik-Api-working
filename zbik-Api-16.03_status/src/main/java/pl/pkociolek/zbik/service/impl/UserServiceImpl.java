@@ -7,11 +7,16 @@ import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 import pl.pkociolek.zbik.components.PasswordEncoder;
 import pl.pkociolek.zbik.exception.*;
 import pl.pkociolek.zbik.model.Role;
 import pl.pkociolek.zbik.model.TokenType;
+import pl.pkociolek.zbik.model.dtos.mail.MailRequest;
 import pl.pkociolek.zbik.model.dtos.request.AdminRequestDto;
 import pl.pkociolek.zbik.model.dtos.token.TokenDto;
 import pl.pkociolek.zbik.model.dtos.user.*;
@@ -20,6 +25,7 @@ import pl.pkociolek.zbik.repository.UserRepository;
 import pl.pkociolek.zbik.repository.entity.TokenEntity;
 import pl.pkociolek.zbik.repository.entity.UserEntity;
 import pl.pkociolek.zbik.service.UserService;
+import pl.pkociolek.zbik.utilities.EmailTemplate;
 import pl.pkociolek.zbik.utilities.jwt.JwtTokenEncoder;
 
 @Service
@@ -33,6 +39,9 @@ class UserServiceImpl implements UserService {
   private final JwtTokenEncoder tokenEncoder;
   private final UserRepository userRepository;
   private final TokenRepository tokenRepository;
+  private final JavaMailSender mailSender;
+  private final TemplateEngine templateEngine;
+
 
   private final Path root = Paths.get("uploads");
 
@@ -55,6 +64,8 @@ class UserServiceImpl implements UserService {
     user.setSurname(userRequestDto.getSurname()); // Ustawienie nazwiska
     user.setRole(Role.NORMAL);
     userRepository.save(user); // Zapisanie do bazy danych
+    createActivateAccToken(userRequestDto);
+    sendActivateAccountEmail(userRequestDto);
   }
 
   // Metoda logowania użytkownika
@@ -119,30 +130,76 @@ class UserServiceImpl implements UserService {
   }
 
   @Override
-  public String forgotPassword(ResetPasswordDto dto) {
+  public String resetPassword(ResetPasswordDto dto, MailRequest request) {
     UserEntity entity = userRepository.findByEmailAddress(dto.getEmail())
             .orElseThrow(
                     UserNotFoundException::new
             );
-    entity.setPassword(dto.getNewPassword());
-    if (dto.getNewPassword() != dto.getConfirmNewPassword()){
+   // entity.setPassword(dto.getNewPassword());
+    if (!Objects.equals(dto.getNewPassword(), dto.getConfirmNewPassword())){
       throw new IdenticalPasswordException();
     }
     if (passwordEncoder.matchPassword(entity.getPassword(),dto.getNewPassword())){
       throw new SameAsOldPasswordException();
     }
+    setNewPwd(request,entity);
 
-    setNewPwd(dto,entity);
-
-  return null;
+  return "Haslo zostało zmienione";
   }
 
-private void setNewPwd(ResetPasswordDto dto, UserEntity entity){
+  @Override
+  public void sendResetPasswordEmail( MailRequest dto) {
+   final EmailTemplate template;
+    UserEntity entity = userRepository.findByEmailAddress(dto.getEmail())
+            .orElseThrow(
+                    UserNotFoundException::new
+            );
+    Context context = new Context();
+    context.setVariable("resetLink", createPasswordResetToken(dto));
+
+    // Generujemy treść emaila z użyciem szablonu Thymeleaf dla resetowania hasła
+    String emailContent = templateEngine.process(EmailTemplate.RESET_TEMPLATE.getName(), context);
+
+    // Tworzymy obiekt wiadomości email
+    SimpleMailMessage mailMessage = new SimpleMailMessage();
+    mailMessage.setFrom("Koło łowieckie żbik");
+    mailMessage.setTo(entity.getEmailAddress());
+    mailMessage.setSubject("Reset Password");
+    mailMessage.setText(emailContent);
+
+    // Wysyłamy wiadomość email
+    mailSender.send(mailMessage);
+  }
+  private void sendActivateAccountEmail(UserRequestDto dto){
+    final EmailTemplate template;
+    final UserEntity entity = userRepository.findByEmailAddress(dto.getEmail())
+            .orElseThrow(
+                    UserNotFoundException::new
+            );
+    Context context = new Context();
+    context.setVariable("activationLink", createActivateAccToken(dto));
+
+    // Generujemy treść emaila z użyciem szablonu Thymeleaf dla resetowania hasła
+    String emailContent = templateEngine.process(EmailTemplate.ACTIVATE_TEMPLATE.getName(), context);
+
+    // Tworzymy obiekt wiadomości email
+    SimpleMailMessage mailMessage = new SimpleMailMessage();
+    mailMessage.setTo(entity.getEmailAddress());
+    mailMessage.setSubject("Aktywacja konta");
+    mailMessage.setText(emailContent);
+
+    // Wysyłamy wiadomość email
+    mailSender.send(mailMessage);
+    entity.setActivated(true);
+  }
+
+  //private void sendResetPasswordEmail(UserEntity entity){
+
+private void setNewPwd( MailRequest dto, UserEntity entity){
     createPasswordResetToken(dto);
-    entity.setPassword(dto.getNewPassword());
 }
 
-  private String createPasswordResetToken(ResetPasswordDto dto) {
+  private String createPasswordResetToken(MailRequest dto) {
     Optional<UserEntity> userOptional = userRepository.findByEmailAddress(dto.getEmail());
     if (userOptional.isEmpty()) {
       throw new UserNotFoundException();
@@ -165,6 +222,29 @@ private void setNewPwd(ResetPasswordDto dto, UserEntity entity){
     return token;
   }
 
+
+  private String createActivateAccToken(UserRequestDto dto) {
+    Optional<UserEntity> userOptional = userRepository.findByEmailAddress(dto.getEmail());
+    if (userOptional.isEmpty()) {
+      throw new UserNotFoundException();
+    }
+    UserEntity user = userOptional.get();
+    // Generate token
+    String token = UUID.randomUUID().toString();
+    // Set token expiry (e.g., 30 dni od teraz)
+    long thirtyDaysInMillis = 30L * 24 * 60 * 60 * 1000;
+    Date expiryDate = new Date(System.currentTimeMillis() + thirtyDaysInMillis);    // Create TokenEntity
+    TokenEntity tokenEntity = new TokenEntity();
+    tokenEntity.setToken(token);
+    tokenEntity.setTokenType(TokenType.ACTIVATION );
+    tokenEntity.setExpiryDate(expiryDate);
+    tokenEntity.setExpired(false);
+    // Save token
+    tokenRepository.save(tokenEntity);
+    user.setResetToken(token);
+    userRepository.save(user);
+    return token;
+  }
 
   // Metoda sprawdzająca, czy mail jest już używany
   private void isMailAllreadyUsed(final UserEntity user) {

@@ -20,9 +20,10 @@ public class GalleryEntity {
     @Id private String id;
     private String title;
     private Set<String> categoryId;
-    private String createdAt;
+    private String creationDateTime;
     private String fileExtension;
     private String fileName;
     private String obfuscatedFileName;
-    private List<GalleryEntity> entityList;
+    private Set<String> imgEntityGalleryList;
+    private String miniatureId;
 }
