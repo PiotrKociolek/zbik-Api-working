@@ -10,7 +10,7 @@ import pl.pkociolek.zbik.model.dtos.response.PostResponseDto;
 
 public interface PostService {
 
-    void createPost( CreatePostDto dto, MultipartFile file);
+    void createPost( CreatePostDto dto, MultipartFile miniture,MultipartFile[] files);
 
     void updatePost(UpdatePostDto updatePostDto);
 

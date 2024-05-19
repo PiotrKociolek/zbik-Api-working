@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import pl.pkociolek.zbik.model.dtos.token.TokenDto;
+import pl.pkociolek.zbik.model.dtos.user.ResetPasswordDto;
 import pl.pkociolek.zbik.model.dtos.user.UserRequestDto;
 import pl.pkociolek.zbik.model.dtos.user.UserLoginResponseDto;
 import pl.pkociolek.zbik.service.UserService;
@@ -33,8 +35,10 @@ public class UserController {
 
 @PostMapping(value = "/forgot-password", produces =  MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public String forgotPassword(@RequestParam String email){
-     return userService.forgotPassword(email);
+    public String forgotPassword(@RequestParam ResetPasswordDto dto) {
+    return userService.forgotPassword(dto);
 }
+
+
 }
 

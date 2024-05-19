@@ -21,12 +21,12 @@ public class PostController {
     private final PostService postService;
 
 
-    @PutMapping(value = "/posts/add",
+    @PostMapping(value = "/posts/add",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void createPost(@ModelAttribute CreatePostDto dto,@ModelAttribute MultipartFile file) {
-        postService.createPost(dto, file);
+    public void createPost(@ModelAttribute CreatePostDto dto,@ModelAttribute MultipartFile miniature,@ModelAttribute MultipartFile[] files) {
+        postService.createPost(dto,miniature, files);
     }
     @PutMapping(value = "/posts/{postId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)

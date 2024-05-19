@@ -66,6 +66,7 @@ public class ManagementServiceImpl implements ManagementService {
       entity.setObfuscatedFileName(generateUniqueFileName());
       String[] extension = file.getOriginalFilename().split("\\.");
       entity.setFileExtension(extension[extension.length-1]);
+      repository.save(entity);
     return entity;
   }
 

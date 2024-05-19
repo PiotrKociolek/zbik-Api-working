@@ -8,6 +8,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pl.pkociolek.zbik.model.Visibility;
 
+import java.util.List;
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,9 +24,7 @@ public class PostEntity {
   private String creationDateTime;
   private String modificationDateTime;
   private Visibility postVisibility;
-  private String fileExtension;
-  private String obfuscatedFileName;
-  private String titleObfuscatedFileName;
-  private String titleFileExtension;
+  private Set<String> imgEntityList;
+  private String miniatureId;
 
 }

@@ -5,8 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.pkociolek.zbik.model.Visibility;
+import pl.pkociolek.zbik.repository.entity.ImgEntity;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,4 +25,6 @@ public class CreatePostDto {
     private String obfuscatedFileName;
     private String titleObfuscatedFileName;
     private String titleFileExtension;
+    private Set<String> imgEntityList;
+    private String setTitleImgId;
 }

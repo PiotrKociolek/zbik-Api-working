@@ -9,16 +9,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.pkociolek.zbik.components.PasswordEncoder;
-import pl.pkociolek.zbik.exception.PasswordDoesNotMatchException;
-import pl.pkociolek.zbik.exception.UserAlreadyExistException;
-import pl.pkociolek.zbik.exception.UserNotFoundException;
+import pl.pkociolek.zbik.exception.*;
 import pl.pkociolek.zbik.model.Role;
 import pl.pkociolek.zbik.model.TokenType;
 import pl.pkociolek.zbik.model.dtos.request.AdminRequestDto;
-import pl.pkociolek.zbik.model.dtos.user.UserDetailsDto;
-import pl.pkociolek.zbik.model.dtos.user.UserRequestDto;
-import pl.pkociolek.zbik.model.dtos.user.UserJWT;
-import pl.pkociolek.zbik.model.dtos.user.UserLoginResponseDto;
+import pl.pkociolek.zbik.model.dtos.token.TokenDto;
+import pl.pkociolek.zbik.model.dtos.user.*;
 import pl.pkociolek.zbik.repository.TokenRepository;
 import pl.pkociolek.zbik.repository.UserRepository;
 import pl.pkociolek.zbik.repository.entity.TokenEntity;
@@ -123,48 +119,49 @@ class UserServiceImpl implements UserService {
   }
 
   @Override
-  public String forgotPassword(String email) {
-    return null;
-    /*  @Override
-  public String forgotPassword(String email) {
-    UserEntity entity = userRepository.findByEmailAddress(email)
+  public String forgotPassword(ResetPasswordDto dto) {
+    UserEntity entity = userRepository.findByEmailAddress(dto.getEmail())
             .orElseThrow(
                     UserNotFoundException::new
             );
-return
-  }*/
-  }
-
-
-  @Override
-  public String createPasswordResetToken(String emailAddress) {
-    Optional<UserEntity> userOptional = userRepository.findByEmailAddress(emailAddress);
-    if (userOptional.isEmpty()) {
-      throw new IllegalArgumentException("User not found with email: " + emailAddress);
+    entity.setPassword(dto.getNewPassword());
+    if (dto.getNewPassword() != dto.getConfirmNewPassword()){
+      throw new IdenticalPasswordException();
+    }
+    if (passwordEncoder.matchPassword(entity.getPassword(),dto.getNewPassword())){
+      throw new SameAsOldPasswordException();
     }
 
-    UserEntity user = userOptional.get();
+    setNewPwd(dto,entity);
 
+  return null;
+  }
+
+private void setNewPwd(ResetPasswordDto dto, UserEntity entity){
+    createPasswordResetToken(dto);
+    entity.setPassword(dto.getNewPassword());
+}
+
+  private String createPasswordResetToken(ResetPasswordDto dto) {
+    Optional<UserEntity> userOptional = userRepository.findByEmailAddress(dto.getEmail());
+    if (userOptional.isEmpty()) {
+      throw new UserNotFoundException();
+    }
+    UserEntity user = userOptional.get();
     // Generate token
     String token = UUID.randomUUID().toString();
-
-    // Set token expiry (e.g., 1 hour from now)
-    Date expiryDate = new Date(System.currentTimeMillis() + 3600000);
-
+    // Set token expiry (e.g., 0,5 hour from now)
+    Date expiryDate = new Date(System.currentTimeMillis() + 1800000);
     // Create TokenEntity
     TokenEntity tokenEntity = new TokenEntity();
     tokenEntity.setToken(token);
     tokenEntity.setTokenType(TokenType.RESET);
     tokenEntity.setExpiryDate(expiryDate);
     tokenEntity.setExpired(false);
-
     // Save token
     tokenRepository.save(tokenEntity);
-
-    // Optionally: Update user with reset token information
     user.setResetToken(token);
     userRepository.save(user);
-
     return token;
   }
 

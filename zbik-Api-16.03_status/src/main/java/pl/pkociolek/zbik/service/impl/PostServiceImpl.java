@@ -16,9 +16,10 @@ import pl.pkociolek.zbik.model.Visibility;
 import pl.pkociolek.zbik.model.dtos.request.CreatePostDto;
 import pl.pkociolek.zbik.model.dtos.request.UpdatePostDto;
 import pl.pkociolek.zbik.model.dtos.response.PostResponseDto;
+import pl.pkociolek.zbik.repository.ImageRepository;
 import pl.pkociolek.zbik.repository.PostRepository;
+import pl.pkociolek.zbik.repository.entity.ImgEntity;
 import pl.pkociolek.zbik.repository.entity.PostEntity;
-import pl.pkociolek.zbik.service.PostImageService;
 import pl.pkociolek.zbik.service.PostService;
 
 import java.nio.file.Files;
@@ -26,50 +27,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+//@Transactional
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
   private final PostRepository repository;
   private final ModelMapper modelMapper;
-
+private final ImageRepository repo;
   private final Path root = Paths.get("uploads");
 
   @Override
-  public void createPost(final CreatePostDto dto,final MultipartFile file) {
-    final PostEntity postEntity = modelMapper.map(dto, PostEntity.class);
-    postEntity.setId(null);
+  public void createPost(CreatePostDto dto, MultipartFile miniature,MultipartFile[] files) {
+    /*final PostEntity postEntity = modelMapper.map(dto, PostEntity.class);
+    postEntity.setId(null);*/
     uploadFolderExists();
-    try {
-      final PostEntity entity = setPostDetails(dto, file);
-      Files.copy(
-              file.getInputStream(),
-              this.root.resolve(Objects.requireNonNull(getTitleFileNameAndExtension(entity))),
-              StandardCopyOption.REPLACE_EXISTING);
-
-
-    }catch (final Exception e) {
-      throw new FileAlreadyExistsException();
-    }
-    /*try{
-      final PostEntity entity = setPostDetails(dto, file);
-      Files.copy(
-              file.getInputStream(),
-              this.root.resolve(Objects.requireNonNull(getFileNameAndExtension(entity))),
-              StandardCopyOption.REPLACE_EXISTING);
-    }catch (final Exception e) {
-      throw new FileAlreadyExistsException();
-    }*/
-
-    repository.save(postEntity);
+    setPostDetails(dto,miniature,files);
+    //repository.save(postEntity);
   }
-private PostEntity setPostDetails(final CreatePostDto dto,final MultipartFile file){
+private PostEntity setPostDetails(final CreatePostDto dto,final MultipartFile miniature, final MultipartFile[] files){
     final PostEntity entity = new PostEntity();
     entity.setId(null);
     entity.setTitle(dto.getTitle());
@@ -78,14 +56,60 @@ private PostEntity setPostDetails(final CreatePostDto dto,final MultipartFile fi
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
     String cretionDate = dateFormat.format(new Date());
     entity.setCreationDateTime(cretionDate);
-    entity.setTitleObfuscatedFileName(generateUniqueFileName());
-    entity.setObfuscatedFileName(generateUniqueFileName());
-  String[] extension = file.getOriginalFilename().split("\\.");
-  entity.setTitleFileExtension(extension[extension.length-1]);
-  entity.setFileExtension(extension[extension.length-1]);
+    Set<ImgEntity> imgEntitySet = new HashSet<>();
+
+    for(int i =0; i< files.length; i++){
+      MultipartFile file = files[i];
+      ImgEntity entity1 =  addSingleItem(file);
+      imgEntitySet.add(entity1);
+    }
+    /*Set<String> addItemList = Arrays.stream(files).map(this::addSingleItem)
+            .map(ImgEntity::getId)
+                  .collect(Collectors.toSet());*/
+    ImgEntity addMiniature = addMiniatureImg(miniature);
+    entity.setMiniatureId(addMiniature.getId());
+    entity.setImgEntityList(imgEntitySet.stream().map(ImgEntity::getId).collect(Collectors.toSet()));
+  repository.save(entity);
   return entity;
 }
+private ImgEntity addSingleItem( MultipartFile file){
+    final ImgEntity entity = new ImgEntity();
+    entity.setId(null);
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+    String cretionDate = dateFormat.format(new Date());
+    entity.setObfuscatedFileName(generateUniqueFileName());
+    String[] extension = file.getOriginalFilename().split("\\.");
+    entity.setFileExtension(extension[extension.length-1]);
+  try {
+   // final ImgEntity foo = addSingleItem(file);
+    Files.copy(
+            file.getInputStream(),
+            this.root.resolve(Objects.requireNonNull(getFileNameAndExtension(entity))),
+            StandardCopyOption.REPLACE_EXISTING);
 
+  }catch (final Exception e) {
+    throw new FileAlreadyExistsException();
+  }
+    return repo.save(entity);
+}
+private ImgEntity addMiniatureImg(MultipartFile file){
+    final ImgEntity entity = new ImgEntity();
+    entity.setSetTitleImgId(null);
+    entity.setObfuscatedFileName(generateUniqueFileName());
+  String[] extension = file.getOriginalFilename().split("\\.");
+  entity.setFileExtension(extension[extension.length-1]);
+  try {
+    final ImgEntity foo = addSingleItem(file);
+    Files.copy(
+            file.getInputStream(),
+            this.root.resolve(Objects.requireNonNull(getFileNameAndExtension(foo))),
+            StandardCopyOption.REPLACE_EXISTING);
+
+  }catch (final Exception e) {
+    throw new FileAlreadyExistsException();
+  }
+  return entity;
+}
   @Override
   public void updatePost(UpdatePostDto dto) {
     Optional<PostEntity> optionalPostEntity = repository.findById(dto.getId());
@@ -96,23 +120,27 @@ private PostEntity setPostDetails(final CreatePostDto dto,final MultipartFile fi
     String cretionDate = dateFormat.format(new Date());
     postEntity.setModificationDateTime(cretionDate);    repository.save(postEntity);
   }
+
+  private void addToImgSet(CreatePostDto dto){
+    final ImgEntity entity;
+  }
   private static String generateUniqueFileName()
   {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     String timestamp = dateFormat.format(new Date());
     return "file_" + timestamp ;
   }
-  private String getFileNameAndExtension(final PostEntity entity) {
+  private String getFileNameAndExtension(final ImgEntity entity) {
     final String filename = entity.getObfuscatedFileName();
     final String extension = entity.getFileExtension();
 
     return String.format("%s.%s", filename, extension);
   }
-  private String getTitleFileNameAndExtension(final PostEntity entity){
+/*  private String getTitleFileNameAndExtension(final ImgEntity entity){
     final String filename = entity.getTitleObfuscatedFileName();
     final String extension = entity.getTitleFileExtension();
     return String.format("%s.%s", filename, extension);
-  }
+  }*/
   private void uploadFolderExists() {
     if (!Files.exists(root)) {
       try {

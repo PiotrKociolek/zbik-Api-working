@@ -1,6 +1,9 @@
 package pl.pkociolek.zbik.service;
 
+import pl.pkociolek.zbik.model.TokenType;
 import pl.pkociolek.zbik.model.dtos.request.*;
+import pl.pkociolek.zbik.model.dtos.token.TokenDto;
+import pl.pkociolek.zbik.model.dtos.user.ResetPasswordDto;
 import pl.pkociolek.zbik.model.dtos.user.UserLoginResponseDto;
 import pl.pkociolek.zbik.model.dtos.user.UserDetailsDto;
 import pl.pkociolek.zbik.model.dtos.user.UserRequestDto;
@@ -19,6 +22,7 @@ public interface UserService {
   void addAdmin(AdminRequestDto dto);
   void addModerator(AdminRequestDto dto);
   List<UserDetailsDto> getAllUsersDetails();
-  public String forgotPassword(String email);
-  String createPasswordResetToken(String email);
+  public String forgotPassword(ResetPasswordDto dto);
+
+
 }

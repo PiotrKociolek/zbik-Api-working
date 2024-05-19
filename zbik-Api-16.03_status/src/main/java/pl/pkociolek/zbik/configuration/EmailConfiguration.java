@@ -1,25 +1,48 @@
 package pl.pkociolek.zbik.configuration;
 
-import io.lettuce.core.dynamic.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.beans.factory.annotation.Value;
+
 
 import java.util.Properties;
-
+@Configuration
+@RequiredArgsConstructor
+@PropertySource("classpath:zbik.properties")
 public class EmailConfiguration {
-    @Configuration
-    public class EmailConfig {
-  /*      @Value("${spring.mail.host}")
-        private String mailHost;
-        @Value("${spring.mail.port}")
-        private String mailPort;
-        @Value("${spring.mail.username}")
-        private String mailUsername;
-        @Value("${spring.mail.password}")
-        private String mailPassword;
-*/
 
+    @Value("${EMAIL_DEBUG_MODE:false}")
+    private Boolean debugMode;
+
+    @Value("${EMAIL_TRANSPORT_PROTOCOL:smtp}")
+    private String transportProtocol;
+
+    @Value("${ENABLE_SMTP_AUTH:true}")
+    private Boolean smtpAuth;
+
+    @Value("${ENABLE_SSL:true}")
+    private Boolean enableSsl;
+
+    @Value("${ENABLE_START_SSL:true}")
+    private Boolean startSslEnable;
+
+    @Value("${REQUIRED_START_SSL:true}")
+    private Boolean startSslRequired;
+
+    @Value("${EMAIL_HOST:smtp.gmail.com}")
+    private String mailSenderHost;
+
+    @Value("${EMAIL_PORT:587}")
+    private Integer mailSenderPort;
+
+    @Value("${EMAIL_USERNAME:zbiktestmail@gmail.com}")
+    private String mailSenderUsername;
+
+    @Value("${EMAIL_PASSWORD:Dupa1234}")
+    private String mailSenderPassword;
 }
-}
+
