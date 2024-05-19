@@ -15,10 +15,10 @@ import pl.pkociolek.zbik.service.HuntingCalendarService;
 public class CalendarController {
   private final HuntingCalendarService calendarService;
 
-  @PutMapping(value = "/huntingCalendar/add", produces = MediaType.APPLICATION_JSON_VALUE)
+/*  @PutMapping(value = "/huntingCalendar/add", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(value = HttpStatus.OK)
   void addDescription(@RequestBody final HuntingCalendarDto huntingCalendarDto) {
-    calendarService.addDescription(huntingCalendarDto);
+    calendarService.addItemToCalendar(huntingCalendarDto);
   }
 
   @PutMapping(value = "/huntingCalendar/addSpecies", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,5 +46,5 @@ public class CalendarController {
   @ResponseStatus(value = HttpStatus.OK)
   public void save( @RequestParam(value = "file") final MultipartFile file, @RequestBody final CalendarRequestDto dto) {
     calendarService.addIcon(file, dto);
-  }
+  }*/
 }

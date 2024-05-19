@@ -55,16 +55,7 @@ public class HuntingCalendarServiceImpl implements HuntingCalendarService {
     repository.deleteById(id);
   }
 
-  private HuntingCalendarEntity setCalendarDetails(HuntingCalendarDto dto, MultipartFile file) {
-    final HuntingCalendarEntity entity = new HuntingCalendarEntity();
-    entity.setId(null);
-    entity.setAnimalSpecies(dto.getSpecies());
-    entity.setDescription(dto.getDescription());
-    entity.setObfuscatedFileName(generateUniqueFileName());
-    String[] extension = file.getOriginalFilename().split("\\.");
-    entity.setFileExtension(extension[extension.length-1]);
-    return entity;
-  }
+
 
   @Override
   public void updateCalendarItem(UpdateCalendarDto dto, MultipartFile file) {
@@ -100,7 +91,16 @@ public class HuntingCalendarServiceImpl implements HuntingCalendarService {
       throw new DatabaseEntityIsNotExistException();
     }
   }
-
+  private HuntingCalendarEntity setCalendarDetails(HuntingCalendarDto dto, MultipartFile file) {
+    final HuntingCalendarEntity entity = new HuntingCalendarEntity();
+    entity.setId(null);
+    entity.setAnimalSpecies(dto.getSpecies());
+    entity.setDescription(dto.getDescription());
+    entity.setObfuscatedFileName(generateUniqueFileName());
+    String[] extension = file.getOriginalFilename().split("\\.");
+    entity.setFileExtension(extension[extension.length-1]);
+    return entity;
+  }
   private static String generateUniqueFileName() {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     String timestamp = dateFormat.format(new Date());

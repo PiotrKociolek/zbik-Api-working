@@ -31,6 +31,10 @@ public class UserController {
     userService.deleteUser(id);
   }
 
-
+@PostMapping(value = "/forgot-password", produces =  MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.OK)
+    public String forgotPassword(@RequestParam String email){
+     return userService.forgotPassword(email);
+}
 }
 

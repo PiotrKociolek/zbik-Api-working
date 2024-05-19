@@ -19,12 +19,11 @@ public class TokenEntity {
 
     @Id
     private String id;
+    private boolean isExpired;
 
     private String token;
 
     private TokenType tokenType;
-
     private Date expiryDate;
-    private boolean isExpired;
 
 }

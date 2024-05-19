@@ -13,7 +13,11 @@ public class EmailActivationAndPassResetImpl implements EmailActivationAndPassRe
         message.setSubject("Aktywacja konta");
         message.setText("Aktywuj swoje konto na stronie koła łowieckiego żbik: " + activationLink);
         javaMailSender.send(message);
+
     }
+
+
+
     @Override
     public void sendPasswordResetEmail(String recipientEmail, String resetLink) {
         SimpleMailMessage message = new SimpleMailMessage();

@@ -5,6 +5,8 @@ import pl.pkociolek.zbik.model.TokenType;
 import pl.pkociolek.zbik.repository.entity.RoleEntity;
 import pl.pkociolek.zbik.repository.entity.TokenEntity;
 
+import java.util.Optional;
+
 public interface TokenRepository extends MongoRepository<TokenEntity, String> {
-    TokenEntity findByTokenAndTokenType(String token, TokenType tokenType);
+    Optional<TokenEntity> findByTokenAndTokenType(String token, TokenType type);
 }

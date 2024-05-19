@@ -66,4 +66,6 @@ public class EmailSchedulerResolver {
     helper.setSubject(emailEntity.getTopic());
     return helper;
   }
+
+
 }

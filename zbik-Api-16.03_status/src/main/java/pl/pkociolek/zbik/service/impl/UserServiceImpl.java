@@ -13,12 +13,15 @@ import pl.pkociolek.zbik.exception.PasswordDoesNotMatchException;
 import pl.pkociolek.zbik.exception.UserAlreadyExistException;
 import pl.pkociolek.zbik.exception.UserNotFoundException;
 import pl.pkociolek.zbik.model.Role;
+import pl.pkociolek.zbik.model.TokenType;
 import pl.pkociolek.zbik.model.dtos.request.AdminRequestDto;
 import pl.pkociolek.zbik.model.dtos.user.UserDetailsDto;
 import pl.pkociolek.zbik.model.dtos.user.UserRequestDto;
 import pl.pkociolek.zbik.model.dtos.user.UserJWT;
 import pl.pkociolek.zbik.model.dtos.user.UserLoginResponseDto;
+import pl.pkociolek.zbik.repository.TokenRepository;
 import pl.pkociolek.zbik.repository.UserRepository;
+import pl.pkociolek.zbik.repository.entity.TokenEntity;
 import pl.pkociolek.zbik.repository.entity.UserEntity;
 import pl.pkociolek.zbik.service.UserService;
 import pl.pkociolek.zbik.utilities.jwt.JwtTokenEncoder;
@@ -33,6 +36,8 @@ class UserServiceImpl implements UserService {
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenEncoder tokenEncoder;
   private final UserRepository userRepository;
+  private final TokenRepository tokenRepository;
+
   private final Path root = Paths.get("uploads");
 
   // Metoda pobierająca użytkownika po ID z cache
@@ -116,6 +121,53 @@ class UserServiceImpl implements UserService {
 
     return userDetailsList;
   }
+
+  @Override
+  public String forgotPassword(String email) {
+    return null;
+    /*  @Override
+  public String forgotPassword(String email) {
+    UserEntity entity = userRepository.findByEmailAddress(email)
+            .orElseThrow(
+                    UserNotFoundException::new
+            );
+return
+  }*/
+  }
+
+
+  @Override
+  public String createPasswordResetToken(String emailAddress) {
+    Optional<UserEntity> userOptional = userRepository.findByEmailAddress(emailAddress);
+    if (userOptional.isEmpty()) {
+      throw new IllegalArgumentException("User not found with email: " + emailAddress);
+    }
+
+    UserEntity user = userOptional.get();
+
+    // Generate token
+    String token = UUID.randomUUID().toString();
+
+    // Set token expiry (e.g., 1 hour from now)
+    Date expiryDate = new Date(System.currentTimeMillis() + 3600000);
+
+    // Create TokenEntity
+    TokenEntity tokenEntity = new TokenEntity();
+    tokenEntity.setToken(token);
+    tokenEntity.setTokenType(TokenType.RESET);
+    tokenEntity.setExpiryDate(expiryDate);
+    tokenEntity.setExpired(false);
+
+    // Save token
+    tokenRepository.save(tokenEntity);
+
+    // Optionally: Update user with reset token information
+    user.setResetToken(token);
+    userRepository.save(user);
+
+    return token;
+  }
+
 
   // Metoda sprawdzająca, czy mail jest już używany
   private void isMailAllreadyUsed(final UserEntity user) {

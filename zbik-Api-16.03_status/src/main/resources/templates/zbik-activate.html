@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:remove="all">Resetowanie Hasła - Koło Łowieckie ŻBIK</title>
+    <title th:remove="all">Aktywacja Konta - Koło Łowieckie ŻBIK</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -65,10 +65,11 @@
 <body>
 <div class="container">
     <h1>Koło Łowieckie ŻBIK</h1>
-    <p>Witaj! Aby zresetować hasło, kliknij poniższy przycisk:</p>
+    <p>Witaj! Aby aktywować swoje konto, kliknij poniższy przycisk: <br>
+        Aktywacji możesz dokonań przez najbliższe x godzin</p>
     <p th:text="${message}"></p>
     <p>
-        <a class="button" th:href="${resetLink}">Resetuj Hasło</a>
+        <a class="button" th:href="${activationLink}">Aktywuj Konto</a>
     </p>
 </div>
 </body>

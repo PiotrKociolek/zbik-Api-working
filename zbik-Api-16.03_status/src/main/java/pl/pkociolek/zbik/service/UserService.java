@@ -19,6 +19,6 @@ public interface UserService {
   void addAdmin(AdminRequestDto dto);
   void addModerator(AdminRequestDto dto);
   List<UserDetailsDto> getAllUsersDetails();
-
-
+  public String forgotPassword(String email);
+  String createPasswordResetToken(String email);
 }
