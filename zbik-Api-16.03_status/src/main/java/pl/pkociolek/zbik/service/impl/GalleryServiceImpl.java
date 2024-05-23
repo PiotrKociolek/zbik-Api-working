@@ -57,12 +57,14 @@ public class GalleryServiceImpl implements GalleryService {
   }
   private ImgEntity addSingleItem(MultipartFile file){
     final ImgEntity entity = new ImgEntity();
+    final GalleryEntity gallery = new GalleryEntity();
     entity.setId(null);
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
     String cretionDate = dateFormat.format(new Date());
     entity.setObfuscatedFileName(generateUniqueFileName());
     String[] extension = file.getOriginalFilename().split("\\.");
     entity.setFileExtension(extension[extension.length-1]);
+    gallery.setMiniatureId(entity.getSetTitleImgId());
     try {
       // final ImgEntity foo = addSingleItem(file);
       Files.copy(

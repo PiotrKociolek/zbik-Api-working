@@ -18,7 +18,6 @@ import pl.pkociolek.zbik.model.Role;
 import pl.pkociolek.zbik.model.TokenType;
 import pl.pkociolek.zbik.model.dtos.mail.MailRequest;
 import pl.pkociolek.zbik.model.dtos.request.AdminRequestDto;
-import pl.pkociolek.zbik.model.dtos.token.TokenDto;
 import pl.pkociolek.zbik.model.dtos.user.*;
 import pl.pkociolek.zbik.repository.TokenRepository;
 import pl.pkociolek.zbik.repository.UserRepository;
@@ -59,20 +58,20 @@ class UserServiceImpl implements UserService {
     isMailAllreadyUsed(user); // Sprawdzenie, czy email już istnieje
     user.setId(null);
     user.setPassword(passwordEncoder.encryptPassword(userRequestDto.getPassword())); // Ustawienie hasła
-    user.setEmailAddress(userRequestDto.getEmail()); // Ustawienie adresu email
+    user.setEmail(userRequestDto.getEmail()); // Ustawienie adresu email
     user.setName(userRequestDto.getName()); // Ustawienie imienia
     user.setSurname(userRequestDto.getSurname()); // Ustawienie nazwiska
     user.setRole(Role.NORMAL);
     userRepository.save(user); // Zapisanie do bazy danych
-    createActivateAccToken(userRequestDto);
-    sendActivateAccountEmail(userRequestDto);
+   // createActivateAccToken(userRequestDto);
+    //sendActivateAccountEmail(userRequestDto);
   }
 
   // Metoda logowania użytkownika
   @Override
   public UserLoginResponseDto loginUser(final String email, final String password) {
     return userRepository
-            .findByEmailAddress(email)
+            .findByEmail(email)
             .map(x -> loginUserAndReturnBearerToken(x, password))
             .orElseThrow(UserNotFoundException::new);
   }
@@ -95,7 +94,7 @@ class UserServiceImpl implements UserService {
      isMailAllreadyUsed(entity);
     entity.setId(null);
     entity.setRole(Role.ADMIN);
-    entity.setEmailAddress(dto.getEmail());
+    entity.setEmail(dto.getEmail());
     entity.setPassword(dto.getPassword());
     entity.setActivated(true);
      userRepository.save(entity);
@@ -108,7 +107,7 @@ class UserServiceImpl implements UserService {
     isMailAllreadyUsed(entity);
     entity.setId(null);
     entity.setRole(Role.MODERATOR);
-    entity.setEmailAddress(dto.getEmail());
+    entity.setEmail(dto.getEmail());
     entity.setPassword(dto.getPassword());
     entity.setActivated(true);
     userRepository.save(entity);
@@ -131,7 +130,7 @@ class UserServiceImpl implements UserService {
 
   @Override
   public String resetPassword(ResetPasswordDto dto, MailRequest request) {
-    UserEntity entity = userRepository.findByEmailAddress(dto.getEmail())
+    UserEntity entity = userRepository.findByEmail(dto.getEmail())
             .orElseThrow(
                     UserNotFoundException::new
             );
@@ -150,7 +149,7 @@ class UserServiceImpl implements UserService {
   @Override
   public void sendResetPasswordEmail( MailRequest dto) {
    final EmailTemplate template;
-    UserEntity entity = userRepository.findByEmailAddress(dto.getEmail())
+    UserEntity entity = userRepository.findByEmail(dto.getEmail())
             .orElseThrow(
                     UserNotFoundException::new
             );
@@ -162,17 +161,23 @@ class UserServiceImpl implements UserService {
 
     // Tworzymy obiekt wiadomości email
     SimpleMailMessage mailMessage = new SimpleMailMessage();
-    mailMessage.setFrom("Koło łowieckie żbik");
-    mailMessage.setTo(entity.getEmailAddress());
+    mailMessage.setFrom("kolozbik1948@gmail.com");
+    mailMessage.setTo(entity.getEmail());
     mailMessage.setSubject("Reset Password");
     mailMessage.setText(emailContent);
 
     // Wysyłamy wiadomość email
     mailSender.send(mailMessage);
   }
+
+  @Override
+  public void logout() {
+
+  }
+
   private void sendActivateAccountEmail(UserRequestDto dto){
     final EmailTemplate template;
-    final UserEntity entity = userRepository.findByEmailAddress(dto.getEmail())
+    final UserEntity entity = userRepository.findByEmail(dto.getEmail())
             .orElseThrow(
                     UserNotFoundException::new
             );
@@ -184,7 +189,8 @@ class UserServiceImpl implements UserService {
 
     // Tworzymy obiekt wiadomości email
     SimpleMailMessage mailMessage = new SimpleMailMessage();
-    mailMessage.setTo(entity.getEmailAddress());
+    mailMessage.setFrom("Koło łowieckie żbik");
+    mailMessage.setTo(entity.getEmail());
     mailMessage.setSubject("Aktywacja konta");
     mailMessage.setText(emailContent);
 
@@ -200,7 +206,7 @@ private void setNewPwd( MailRequest dto, UserEntity entity){
 }
 
   private String createPasswordResetToken(MailRequest dto) {
-    Optional<UserEntity> userOptional = userRepository.findByEmailAddress(dto.getEmail());
+    Optional<UserEntity> userOptional = userRepository.findByEmail(dto.getEmail());
     if (userOptional.isEmpty()) {
       throw new UserNotFoundException();
     }
@@ -224,7 +230,7 @@ private void setNewPwd( MailRequest dto, UserEntity entity){
 
 
   private String createActivateAccToken(UserRequestDto dto) {
-    Optional<UserEntity> userOptional = userRepository.findByEmailAddress(dto.getEmail());
+    Optional<UserEntity> userOptional = userRepository.findByEmail(dto.getEmail());
     if (userOptional.isEmpty()) {
       throw new UserNotFoundException();
     }
@@ -248,7 +254,7 @@ private void setNewPwd( MailRequest dto, UserEntity entity){
 
   // Metoda sprawdzająca, czy mail jest już używany
   private void isMailAllreadyUsed(final UserEntity user) {
-    Optional<UserEntity> existingUser = userRepository.findByEmailAddress(user.getEmailAddress());
+    Optional<UserEntity> existingUser = userRepository.findByEmail(user.getEmail());
     existingUser.ifPresent(
             x -> {
               throw new UserAlreadyExistException();
@@ -265,11 +271,11 @@ private void setNewPwd( MailRequest dto, UserEntity entity){
 
     final UserJWT jwt = new UserJWT();
     jwt.setId(entity.getId());
-    jwt.setEmail(entity.getEmailAddress());
+    jwt.setEmail(entity.getEmail());
 
     final String encodedJwt = tokenEncoder.generateBearerJwtTokenFromModel(jwt);
     final UserLoginResponseDto responseObject = new UserLoginResponseDto();
-    responseObject.setEmail(entity.getEmailAddress());
+    responseObject.setEmail(entity.getEmail());
     responseObject.setToken(encodedJwt);
 
     return responseObject;
@@ -283,7 +289,7 @@ private void setNewPwd( MailRequest dto, UserEntity entity){
     userEntity.setName(dto.getName());
     userEntity.setSurname(dto.getSurname());
     userEntity.setActivated(true);
-    userEntity.setEmailAddress(dto.getEmail());
+    userEntity.setEmail(dto.getEmail());
     return userEntity;
   }
   }

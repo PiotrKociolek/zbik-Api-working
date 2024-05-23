@@ -12,6 +12,7 @@ import pl.pkociolek.zbik.model.Visibility;
 import pl.pkociolek.zbik.model.dtos.request.CreatePostDto;
 import pl.pkociolek.zbik.model.dtos.request.UpdatePostDto;
 import pl.pkociolek.zbik.model.dtos.response.PostResponseDto;
+import pl.pkociolek.zbik.repository.entity.PostEntity;
 import pl.pkociolek.zbik.service.PostService;
 
 @RestController
@@ -21,7 +22,7 @@ public class PostController {
     private final PostService postService;
 
 
-    @PostMapping(value = "/posts/add",
+    @PostMapping(value = "/add",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
@@ -42,7 +43,7 @@ public class PostController {
     }
     @GetMapping(value = "/posts/{postId}",produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public PostResponseDto getPostsById(@PathVariable("postId") String postId){
+    public PostEntity getPostsById(@PathVariable("postId") String postId){
        return postService.getPostById(postId);
     }
     @GetMapping(value = "/posts/list/{size}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)

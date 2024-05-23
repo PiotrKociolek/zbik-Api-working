@@ -20,7 +20,7 @@ public class UserEntity {
   private String name;
   private String surname;
   private String phoneNumber;
-  private String emailAddress;
+  private String email;
   private String password;
   private Role role;
   private Boolean activated = false;

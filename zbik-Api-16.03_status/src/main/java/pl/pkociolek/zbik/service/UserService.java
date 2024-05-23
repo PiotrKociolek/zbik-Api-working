@@ -24,6 +24,7 @@ public interface UserService {
   List<UserDetailsDto> getAllUsersDetails();
   public String resetPassword(ResetPasswordDto dto, MailRequest request);
   public void sendResetPasswordEmail( MailRequest dto);
+  public void logout();
 
 
 }

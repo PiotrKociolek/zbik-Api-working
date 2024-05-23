@@ -86,7 +86,7 @@ class EmailSchedulerServiceImpl implements EmailSchedulerService {
           final String content,
           final String header,
           final EmailTemplate template) {
-    final String userEmail = userService.getUserById(userId).getEmailAddress();
+    final String userEmail = userService.getUserById(userId).getEmail();
     final PendingEmailEntity emailEntity = new PendingEmailEntity();
     emailEntity.setId(null);
     emailEntity.setRecipient(userEmail);

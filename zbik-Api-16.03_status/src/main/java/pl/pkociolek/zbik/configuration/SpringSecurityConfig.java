@@ -44,6 +44,9 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(chain -> chain
                         .requestMatchers("/swagger-ui/**")
                         .permitAll()
+                       /* .requestMatchers(GET)
+                        .permitAll()*/
+
                         .anyRequest()
                         .permitAll())
                 .addFilter(new TokenAuthFilter(authManager(), jwtTokenEncoder))

@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.pkociolek.zbik.model.dtos.Gallery.ModifyGalleryDto;
 import pl.pkociolek.zbik.model.dtos.request.GalleryRequestDto;
 import pl.pkociolek.zbik.repository.entity.GalleryEntity;
+import pl.pkociolek.zbik.repository.entity.ImgEntity;
 import pl.pkociolek.zbik.service.GalleryService;
 
 import java.util.List;
@@ -42,10 +43,10 @@ final GalleryService galleryService;
         galleryService.modify(dto,file);
     };
     @GetMapping (value = "/",
-    produces = MediaType.APPLICATION_JSON_VALUE,
-    consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    produces = MediaType.APPLICATION_JSON_VALUE)
+   // consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     List<GalleryEntity> getAllPhotos(){
         return galleryService.getAllPhotos();
-    };
+    }
 }

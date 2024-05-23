@@ -7,6 +7,7 @@ import pl.pkociolek.zbik.model.Visibility;
 import pl.pkociolek.zbik.model.dtos.request.CreatePostDto;
 import pl.pkociolek.zbik.model.dtos.request.UpdatePostDto;
 import pl.pkociolek.zbik.model.dtos.response.PostResponseDto;
+import pl.pkociolek.zbik.repository.entity.PostEntity;
 
 public interface PostService {
 
@@ -16,7 +17,7 @@ public interface PostService {
 
     void deletePost(String postId);
 
-    PostResponseDto getPostById(String postId);
+    PostEntity getPostById(String postId);
 
     Page<PostResponseDto> getAllPosts(Pageable pageable);
 

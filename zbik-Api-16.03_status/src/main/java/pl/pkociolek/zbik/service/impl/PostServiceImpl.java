@@ -154,12 +154,12 @@ private ImgEntity addMiniatureImg(MultipartFile file){
   }
 
   @Override
-  public PostResponseDto getPostById(final String postId) {
+  public PostEntity getPostById(final String postId) {
     Optional<PostEntity> postEntityOptional = repository.findById(postId);
 
     if (postEntityOptional.isPresent()) {
       PostEntity postEntity = postEntityOptional.get();
-      return modelMapper.map(postEntity, PostResponseDto.class);
+      return postEntity;
     } else {
       throw new PostNotFoundException();
     }

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import pl.pkociolek.zbik.exception.CannotCreateUploadFolderException;
 import pl.pkociolek.zbik.exception.FileAlreadyExistsException;
+import pl.pkociolek.zbik.exception.InvalidDataException;
 import pl.pkociolek.zbik.model.dtos.request.ManagementImgDto;
 import pl.pkociolek.zbik.model.dtos.response.ManagementInfoDto;
 import pl.pkociolek.zbik.repository.ManagementRepository;
@@ -41,6 +42,7 @@ public class ManagementServiceImpl implements ManagementService {
   public void addToManagement(final ManagementInfoDto dto, final MultipartFile file){
       final ManagementEntity mgmtE = modelMapper.map(dto, ManagementEntity.class);
       uploadFolderExists();
+
     try {
       final ManagementEntity mEntity = setMgmtDetails(file, dto);
       Files.copy(

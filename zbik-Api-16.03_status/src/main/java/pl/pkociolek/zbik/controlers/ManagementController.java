@@ -25,8 +25,8 @@ public class ManagementController {
 
    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
    @ResponseStatus(HttpStatus.OK)
-   public void addToManagement(@RequestParam("file") MultipartFile multipartFile,@ModelAttribute("Info") ManagementInfoDto dto) {
-     managementService.addToManagement(dto, multipartFile);
+   public void addToManagement(@RequestParam("file") MultipartFile file,@ModelAttribute("Info") ManagementInfoDto dto) {
+     managementService.addToManagement(dto, file);
    }
 
 }

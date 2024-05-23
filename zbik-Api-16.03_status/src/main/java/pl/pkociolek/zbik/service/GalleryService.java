@@ -4,6 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.pkociolek.zbik.model.dtos.Gallery.ModifyGalleryDto;
 import pl.pkociolek.zbik.model.dtos.request.GalleryRequestDto;
 import pl.pkociolek.zbik.repository.entity.GalleryEntity;
+import pl.pkociolek.zbik.repository.entity.ImgEntity;
 
 import java.util.List;
 
